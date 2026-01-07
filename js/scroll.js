@@ -29,10 +29,10 @@ function updateVis(state) {
   }
 
   currentStep = state;
-  
+
   switch (state) {
     case "base":
-      drawBaseMap(nacionalitatData, currentYear);
+      drawPopulationGrowthMap(nacionalitatData, currentYear);
       break;
     case "impacte":
       drawImpactMap(edatFrangesData);
