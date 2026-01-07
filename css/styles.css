@@ -1,67 +1,84 @@
+/* ===================== */
+/* RESET BÀSIC */
+/* ===================== */
 body {
   margin: 0;
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.6;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
   color: #222;
-  background: #ffffff;
 }
 
-h1, h2 {
-  font-weight: 600;
+/* ===================== */
+/* HEADER */
+/* ===================== */
+header {
+  padding: 30px 40px 10px 40px;
 }
 
-#scrolly {
-  width: 100%;
+h1 {
+  margin: 0;
+  font-size: 2.2rem;
 }
 
-.intro {
-  padding: 4rem;
-  background: #f2f2f2;
+.subtitle {
+  color: #555;
+  max-width: 800px;
 }
 
-.scrolly-section {
+/* ===================== */
+/* LAYOUT PRINCIPAL */
+/* ===================== */
+#container {
   display: flex;
-  position: relative;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 20px 40px;
 }
 
-.text {
-  width: 40%;
-  padding: 2rem 3rem;
+/* Columna narrativa */
+#text {
+  flex: 1;
+  max-width: 420px;
 }
 
+/* Columna gràfica */
+#graphic {
+  flex: 2;
+  position: sticky;
+  top: 20px;
+}
+
+/* ===================== */
+/* STEPS (scroll) */
+/* ===================== */
 .step {
-  margin-bottom: 5rem;
-  padding-left: 1rem;
-  border-left: 4px solid #ccc;
-  transition: border-color 0.3s;
+  margin-bottom: 120px;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
 }
 
 .step.active {
-  border-left: 4px solid #000;
+  opacity: 1;
 }
 
-.vis {
-  width: 60%;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  background: #fafafa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.step h2 {
+  margin-top: 0;
 }
 
+/* ===================== */
+/* MAPA */
+/* ===================== */
 #map {
-  width: 95%;
-  height: 95%;
+  width: 100%;
+  height: 500px;
+  border: 1px solid #ddd;
+  background: #fafafa;
 }
 
-.tooltip {
-  font-size: 0.9rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  z-index: 1000;
-}
-
+/* ===================== */
+/* TIMELINE CONTROLS */
+/* ===================== */
 #timeline-controls {
   display: flex;
   align-items: center;
@@ -81,4 +98,14 @@ h1, h2 {
 
 #year-label {
   font-weight: bold;
+}
+
+/* ===================== */
+/* TOOLTIP */
+/* ===================== */
+.tooltip {
+  font-size: 0.9rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 1000;
+  pointer-events: none;
 }
