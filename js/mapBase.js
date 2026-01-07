@@ -1,4 +1,6 @@
-// ===== Utils =====
+// ======================
+// Utils
+// ======================
 function normalitzaNom(nom) {
   return nom
     .toLowerCase()
@@ -8,7 +10,15 @@ function normalitzaNom(nom) {
     .trim();
 }
 
-// ===== Tooltip =====
+// ======================
+// Estat temporal
+// ======================
+let currentYear = 2020;
+let playInterval = null;
+
+// ======================
+// Tooltip
+// ======================
 const tooltip = d3.select("body")
   .append("div")
   .attr("class", "tooltip")
@@ -34,8 +44,10 @@ function hideTooltip() {
   tooltip.transition().duration(150).style("opacity", 0);
 }
 
-// ===== Mapa base =====
-function drawBaseMap(data) {
+// ======================
+// Mapa base
+// ======================
+function drawBaseMap(data, year = currentYear) {
   if (!barrisGeoJSON || !barrisGeoJSON.features) {
     console.warn("⏳ barrisGeoJSON encara no carregat");
     return;
@@ -47,7 +59,6 @@ function drawBaseMap(data) {
   const width = svg.node().clientWidth;
   const height = svg.node().clientHeight;
 
-  // Projecció correcta per EPSG:25831 (UTM)
   const projection = d3.geoIdentity()
     .reflectY(true)
     .fitSize([width, height], barrisGeoJSON);
@@ -57,15 +68,9 @@ function drawBaseMap(data) {
   // Només barris reals
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
-  console.log("Barris reals:", barris.length);
-  console.log("Exemple barri GEO:", barris[0].properties.NOM);
-  console.log("Exemple barri GEO normalitzat:", normalitzaNom(barris[0].properties.NOM));
-  console.log("Exemple CSV normalitzat:", normalitzaNom(data[0].Nom_Barri));
-
-  // Agregació població per barri (2020)
-  console.log("Data:", data);
+  // Agregació població per barri per any
   const poblacioPerBarri = d3.rollup(
-    data.filter(d => d.Data_Referencia.startsWith("2020")),
+    data.filter(d => d.Data_Referencia.startsWith(year.toString())),
     v => d3.sum(v, d => +d.Valor),
     d => normalitzaNom(d.Nom_Barri)
   );
@@ -96,7 +101,7 @@ function drawBaseMap(data) {
       const nom = d.properties.NOM;
       const valor = poblacioPerBarri.get(normalitzaNom(nom)) || 0;
 
-      showTooltip(event, `<strong>${nom}</strong><br/>Població (2020): ${valor.toLocaleString()}`);
+      showTooltip(event, `<strong>${nom}</strong><br/>Població (${year}): ${valor.toLocaleString()}`);
     })
     .on("mousemove", function (event) {
       tooltip
@@ -115,11 +120,14 @@ function drawBaseMap(data) {
   svg.append("text")
     .attr("x", 20)
     .attr("y", 30)
-    .text("Distribució de la població per barri (2020)")
+    .text(`Distribució de la població per barri (${year})`)
     .style("font-size", "18px")
     .style("font-weight", "bold");
 }
 
+// ======================
+// Impacte (stub)
+// ======================
 function drawImpactMap(data) {
   clearMap();
   const svg = d3.select("#map");
@@ -131,6 +139,44 @@ function drawImpactMap(data) {
     .style("font-weight", "bold");
 }
 
+// ======================
+// Clear
+// ======================
 function clearMap() {
   d3.select("#map").selectAll("*").remove();
+}
+
+// ======================
+// Timeline controls
+// ======================
+const yearSlider = document.getElementById("year-slider");
+const yearLabel = document.getElementById("year-label");
+const playBtn = document.getElementById("play-btn");
+
+if (yearSlider && yearLabel && playBtn) {
+
+  yearSlider.addEventListener("input", e => {
+    currentYear = +e.target.value;
+    yearLabel.textContent = currentYear;
+    drawBaseMap(nacionalitatData, currentYear);
+  });
+
+  playBtn.addEventListener("click", () => {
+    if (playInterval) {
+      clearInterval(playInterval);
+      playInterval = null;
+      playBtn.textContent = "▶️ Play";
+    } else {
+      playBtn.textContent = "⏸ Pause";
+      playInterval = setInterval(() => {
+        currentYear++;
+        if (currentYear > 2025) currentYear = 2020;
+
+        yearSlider.value = currentYear;
+        yearLabel.textContent = currentYear;
+        drawBaseMap(nacionalitatData, currentYear);
+      }, 1200);
+    }
+  });
+
 }

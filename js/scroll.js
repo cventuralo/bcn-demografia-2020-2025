@@ -28,7 +28,7 @@ function updateVis(state) {
 
   switch (state) {
     case "base":
-      drawBaseMap(nacionalitatData);
+      drawBaseMap(nacionalitatData, currentYear);
       break;
     case "impacte":
       drawImpactMap(edatFrangesData);

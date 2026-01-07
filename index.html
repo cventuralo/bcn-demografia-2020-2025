@@ -1,98 +1,128 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-  <meta charset="UTF-8" />
-  <title>Transformacions demogràfiques a Barcelona</title>
+  <meta charset="UTF-8">
+  <title>Demografia i fluxos migratoris a Barcelona (2020–2025)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="css/styles.css" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/styles.css">
 
-  <!-- Llibreries -->
+  <!-- D3 -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- GSAP + ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 
 <body>
 
-<main id="scrolly">
-
-  <section class="intro">
-    <h1>Transformacions demogràfiques als barris de Barcelona (2020–2025)</h1>
-    <p>
-      Anàlisi territorial de fluxos migratoris, estructura d’edat i nivell educatiu després de la pandèmia del 2020.
+  <!-- ===================== -->
+  <!-- TÍTOL PRINCIPAL -->
+  <!-- ===================== -->
+  <header>
+    <h1>Demografia i fluxos migratoris a Barcelona (2020–2025)</h1>
+    <p class="subtitle">
+      Anàlisi territorial de l’impacte post-pandèmia, estructura d’edat i mobilitat poblacional
     </p>
-  </section>
+  </header>
 
-  <section class="scrolly-section">
+  <!-- ===================== -->
+  <!-- CONTENIDOR PRINCIPAL -->
+  <!-- ===================== -->
+  <main id="container">
 
-    <div class="text">
+    <!-- ===== Columna narrativa ===== -->
+    <section id="text">
 
       <div class="step" data-step="base">
         <h2>Distribució demogràfica inicial</h2>
         <p>
-          Aquesta secció presenta una fotografia inicial de la distribució poblacional als barris de Barcelona l’any 2020.
+          Abans de l’impacte de la pandèmia, la distribució de la població a Barcelona mostrava
+          fortes diferències entre barris, tant en densitat com en composició demogràfica.
+          Aquesta visualització mostra la població total per barri l’any 2020.
         </p>
       </div>
 
       <div class="step" data-step="impacte">
         <h2>Impacte de la pandèmia</h2>
         <p>
-          Variació percentual de la població resident per barri després de la pandèmia.
+          La pandèmia de la COVID-19 va alterar de manera significativa la dinàmica demogràfica
+          de la ciutat. Alguns barris van experimentar pèrdues de població mentre que altres
+          van registrar increments.
         </p>
       </div>
 
       <div class="step" data-step="fluxos">
         <h2>Fluxos migratoris</h2>
         <p>
-          Reconfiguració dels orígens geogràfics de la població resident.
+          L’anàlisi dels fluxos migratoris permet identificar canvis en l’origen geogràfic de la
+          població resident, així com patrons de mobilitat interna dins la ciutat.
         </p>
       </div>
 
       <div class="step" data-step="edat">
         <h2>Estructura d’edat</h2>
         <p>
-          Evolució de les franges d’edat als barris de Barcelona.
+          L’estructura d’edat dels barris revela processos de rejoveniment, envelliment o
+          substitució poblacional que tenen implicacions directes en les polítiques públiques.
         </p>
       </div>
 
       <div class="step" data-step="micro">
         <h2>Microanàlisi per secció censal</h2>
         <p>
-          Heterogeneïtats internes dins d’un mateix barri a partir de l’edat exacta.
+          A escala de secció censal s’observen dinàmiques molt més fines, que permeten detectar
+          processos de gentrificació, concentració poblacional o vulnerabilitat social.
         </p>
       </div>
 
       <div class="step" data-step="educacio">
         <h2>Nivell educatiu i territori</h2>
         <p>
-          Distribució territorial del nivell educatiu i possibles indicadors de gentrificació.
+          La relació entre nivell educatiu, lloc de naixement i edat aporta una visió
+          multidimensional de la composició social dels barris de Barcelona.
         </p>
       </div>
 
       <div class="step" data-step="conclusio">
-        <h2>Síntesi i reflexió final</h2>
+        <h2>Conclusions</h2>
         <p>
-          Síntesi de les dinàmiques observades i reflexió final.
+          La combinació d’anàlisi espacial, temporal i demogràfica permet comprendre millor
+          els processos de transformació urbana i social a Barcelona entre 2020 i 2025.
         </p>
       </div>
 
-    </div>
+    </section>
 
-    <div class="vis">
-      <svg id="map"></svg>
-    </div>
+    <!-- ===== Columna visualització ===== -->
+    <section id="graphic">
 
-  </section>
+      <!-- MAPA -->
+      <svg id="map" width="100%" height="500"></svg>
 
-</main>
+      <!-- CONTROLS TEMPORALS -->
+      <div id="timeline-controls">
+        <button id="play-btn">▶️ Play</button>
+        <input type="range" id="year-slider" min="2020" max="2025" step="1" value="2020">
+        <span id="year-label">2020</span>
+      </div>
 
-<script src="js/main.js"></script>
-<script src="js/scroll.js"></script>
-<script src="js/mapBase.js"></script>
-<script src="js/flows.js"></script>
-<script src="js/ageStructure.js"></script>
-<script src="js/censusMicro.js"></script>
-<script src="js/education.js"></script>
+    </section>
+
+  </main>
+
+  <!-- ===================== -->
+  <!-- SCRIPTS DEL PROJECTE -->
+  <!-- ===================== -->
+  <script src="js/main.js"></script>
+  <script src="js/mapBase.js"></script>
+  <script src="js/flows.js"></script>
+  <script src="js/ageStructure.js"></script>
+  <script src="js/censusMicro.js"></script>
+  <script src="js/education.js"></script>
+  <script src="js/scroll.js"></script>
 
 </body>
 </html>
