@@ -241,25 +241,34 @@ function drawSexGrowthMap(data, year = currentYear) {
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
   // ============================
-  // 1. Filtrar 2020 i currentYear
+  // 1. Filtrar 2020 i year
   // ============================
   const data2020 = data.filter(d => d.Data_Referencia.startsWith("2020"));
   const dataYear = data.filter(d => d.Data_Referencia.startsWith(year.toString()));
 
   // ============================
-  // 2. Agrupar per barri + sexe
+  // 2. Agrupar per barri + sexe (CORRECTE: 1 = Dona, 2 = Home)
   // ============================
   function agrupaPerBarriISexe(dataset) {
     return d3.rollup(
       dataset,
       v => d3.sum(v, d => +d.Valor),
       d => normalitzaNom(d.Nom_Barri),
-      d => d.Sexe
+      d => {
+        const s = d.SEXE || d.Sexe || d.sexe;
+        if (s === "1" || s === 1) return "Dona";
+        if (s === "2" || s === 2) return "Home";
+        return "Altres";
+      }
     );
   }
 
   const map2020 = agrupaPerBarriISexe(data2020);
   const mapYear = agrupaPerBarriISexe(dataYear);
+
+  // DEBUG (pots treure després)
+  console.log("DEBUG map2020 sexe:", map2020);
+  console.log("DEBUG mapYear sexe:", mapYear);
 
   // ============================
   // 3. Calcular diferència (year - 2020)
@@ -269,21 +278,21 @@ function drawSexGrowthMap(data, year = currentYear) {
   barris.forEach(b => {
     const nom = normalitzaNom(b.properties.NOM);
 
-    const homes2020 = map2020.get(nom)?.get("Home") || 0;
     const dones2020 = map2020.get(nom)?.get("Dona") || 0;
+    const homes2020 = map2020.get(nom)?.get("Home") || 0;
 
-    const homesYear = mapYear.get(nom)?.get("Home") || 0;
     const donesYear = mapYear.get(nom)?.get("Dona") || 0;
+    const homesYear = mapYear.get(nom)?.get("Home") || 0;
 
-    const diffHomes = homesYear - homes2020;
     const diffDones = donesYear - dones2020;
+    const diffHomes = homesYear - homes2020;
 
     // positiu = creixen més dones | negatiu = creixen més homes
     diffPerBarri.set(nom, diffDones - diffHomes);
   });
 
   // ============================
-  // 4. Escala divergent GLOBAL (fixa)
+  // 4. Escala divergent
   // ============================
   const maxAbs = d3.max(Array.from(diffPerBarri.values()).map(v => Math.abs(v))) || 1;
 
