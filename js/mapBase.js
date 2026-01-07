@@ -418,7 +418,7 @@ function drawSexGrowthMap(data, year = currentYear) {
 
   counterGroup.append("rect")
     .attr("width", 220)
-    .attr("height", 80)
+    .attr("height", 100)
     .attr("rx", 6)
     .attr("ry", 6)
     .attr("fill", "white")
