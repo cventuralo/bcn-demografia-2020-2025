@@ -15,6 +15,7 @@ function normalitzaNom(nom) {
 // ======================
 let currentYear = 2020;
 let playInterval = null;
+let maxPoblacioGlobal = null; // 🔴 clau per escala fixa
 
 // ======================
 // Tooltip
@@ -45,7 +46,7 @@ function hideTooltip() {
 }
 
 // ======================
-// Mapa base (ACUMULATIU)
+// Mapa base (ACUMULATIU + ESCALA FIXA)
 // ======================
 function drawBaseMap(data, year = currentYear) {
   if (!barrisGeoJSON || !barrisGeoJSON.features) {
@@ -68,7 +69,9 @@ function drawBaseMap(data, year = currentYear) {
   // Només barris reals
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
-  // 🔴 ACUMULACIÓ: sumem des de 2020 fins a l'any actual
+  // ======================
+  // ACUMULACIÓ 2020 → year
+  // ======================
   const poblacioPerBarri = d3.rollup(
     data.filter(d => {
       const any = +d.Data_Referencia.slice(0, 4);
@@ -78,12 +81,33 @@ function drawBaseMap(data, year = currentYear) {
     d => normalitzaNom(d.Nom_Barri)
   );
 
-  const maxPoblacio = d3.max(Array.from(poblacioPerBarri.values())) || 0;
+  // ======================
+  // MÀXIM GLOBAL (una sola vegada)
+  // ======================
+  if (!maxPoblacioGlobal) {
+    const poblacioTotalGlobal = d3.rollup(
+      data.filter(d => {
+        const any = +d.Data_Referencia.slice(0, 4);
+        return any >= 2020 && any <= 2025;
+      }),
+      v => d3.sum(v, d => +d.Valor),
+      d => normalitzaNom(d.Nom_Barri)
+    );
 
+    maxPoblacioGlobal = d3.max(Array.from(poblacioTotalGlobal.values()));
+    console.log("🔵 Max població global 2020–2025:", maxPoblacioGlobal);
+  }
+
+  // ======================
+  // Escala de color FIXA
+  // ======================
   const color = d3.scaleSequential()
-    .domain([0, maxPoblacio])
+    .domain([0, maxPoblacioGlobal])
     .interpolator(d3.interpolateBlues);
 
+  // ======================
+  // Dibuix
+  // ======================
   svg.selectAll("path")
     .data(barris)
     .enter()
@@ -119,7 +143,9 @@ function drawBaseMap(data, year = currentYear) {
       hideTooltip();
     });
 
+  // ======================
   // Títol
+  // ======================
   svg.append("text")
     .attr("x", 20)
     .attr("y", 30)
