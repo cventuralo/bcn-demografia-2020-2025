@@ -241,58 +241,43 @@ function drawSexGrowthMap(data, year = currentYear) {
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
   // ============================
-  // 1. Filtrar 2020 i year
+  // 1. Pre-filtrar dades 2020 → year
   // ============================
-  const data2020 = data.filter(d => d.Data_Referencia.startsWith("2020"));
-  const dataYear = data.filter(d => d.Data_Referencia.startsWith(year.toString()));
+  const dataFiltrada = data.filter(d => {
+    const any = +d.Data_Referencia.slice(0, 4);
+    return any >= 2020 && any <= year;
+  });
 
   // ============================
-  // 2. Agrupar per barri + sexe (CORRECTE: 1 = Dona, 2 = Home)
-  // ============================
-  function agrupaPerBarriISexe(dataset) {
-    return d3.rollup(
-      dataset,
-      v => d3.sum(v, d => +d.Valor),
-      d => normalitzaNom(d.Nom_Barri),
-      d => {
-        const s = d.SEXE || d.Sexe || d.sexe;
-        if (s === "1" || s === 1) return "Dona";
-        if (s === "2" || s === 2) return "Home";
-        return "Altres";
-      }
-    );
-  }
-
-  const map2020 = agrupaPerBarriISexe(data2020);
-  const mapYear = agrupaPerBarriISexe(dataYear);
-
-  // DEBUG (pots treure després)
-  console.log("DEBUG map2020 sexe:", map2020);
-  console.log("DEBUG mapYear sexe:", mapYear);
-
-  // ============================
-  // 3. Calcular diferència (year - 2020)
+  // 2. Calcular acumulació per barri
   // ============================
   const diffPerBarri = new Map();
 
   barris.forEach(b => {
     const nom = normalitzaNom(b.properties.NOM);
 
-    const dones2020 = map2020.get(nom)?.get("Dona") || 0;
-    const homes2020 = map2020.get(nom)?.get("Home") || 0;
+    const donesAcumulades = d3.sum(
+      dataFiltrada.filter(d =>
+        normalitzaNom(d.Nom_Barri) === nom &&
+        (d.SEXE === 1 || d.SEXE === "1")
+      ),
+      d => +d.Valor
+    );
 
-    const donesYear = mapYear.get(nom)?.get("Dona") || 0;
-    const homesYear = mapYear.get(nom)?.get("Home") || 0;
+    const homesAcumulats = d3.sum(
+      dataFiltrada.filter(d =>
+        normalitzaNom(d.Nom_Barri) === nom &&
+        (d.SEXE === 2 || d.SEXE === "2")
+      ),
+      d => +d.Valor
+    );
 
-    const diffDones = donesYear - dones2020;
-    const diffHomes = homesYear - homes2020;
-
-    // positiu = creixen més dones | negatiu = creixen més homes
-    diffPerBarri.set(nom, diffDones - diffHomes);
+    // positiu = més dones | negatiu = més homes
+    diffPerBarri.set(nom, donesAcumulades - homesAcumulats);
   });
 
   // ============================
-  // 4. Escala divergent
+  // 3. Escala divergent (fixa per aquest frame)
   // ============================
   const maxAbs = d3.max(Array.from(diffPerBarri.values()).map(v => Math.abs(v))) || 1;
 
@@ -301,7 +286,7 @@ function drawSexGrowthMap(data, year = currentYear) {
     .interpolator(d3.interpolateRdBu);
 
   // ============================
-  // 5. Dibuixar mapa
+  // 4. Dibuixar mapa
   // ============================
   svg.selectAll("path")
     .data(barris)
@@ -334,7 +319,7 @@ function drawSexGrowthMap(data, year = currentYear) {
 
       showTooltip(
         event,
-        `<strong>${d.properties.NOM}</strong><br/>Balanç per sexe (2020–${year}): ${text}`
+        `<strong>${d.properties.NOM}</strong><br/>Balanç acumulat per sexe (2020–${year}): ${text}`
       );
     })
     .on("mousemove", function (event) {
@@ -351,17 +336,17 @@ function drawSexGrowthMap(data, year = currentYear) {
     });
 
   // ============================
-  // 6. Títol
+  // 5. Títol
   // ============================
   svg.append("text")
     .attr("x", 20)
     .attr("y", 30)
-    .text(`Balanç de creixement per sexe (2020–${year})`)
+    .text(`Balanç acumulat per sexe (2020–${year})`)
     .style("font-size", "18px")
     .style("font-weight", "bold");
 
   // ============================
-  // 7. Llegenda
+  // 6. Llegenda
   // ============================
   const legendWidth = 200;
   const legendHeight = 10;
