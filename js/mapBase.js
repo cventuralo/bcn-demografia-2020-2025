@@ -266,7 +266,7 @@ function drawSexGrowthMap(data, year = currentYear) {
   const mapYear = mapPerBarriISexe(dataYear);
 
   // ============================
-  // 3. Increment real per barri
+  // 3. Increment real per barri (2020 → year)
   // ============================
   const diffPerBarri = new Map();
 
@@ -287,9 +287,10 @@ function drawSexGrowthMap(data, year = currentYear) {
   });
 
   // ============================
-  // 4. Escala divergent correcta
+  // 4. Escala divergent coherent amb el mapa
   // ============================
-  const maxAbs = d3.max(Array.from(diffPerBarri.values()).map(v => Math.abs(v))) || 1;
+  const values = Array.from(diffPerBarri.values());
+  const maxAbs = d3.max(values.map(v => Math.abs(v))) || 1;
 
   const color = d3.scaleDiverging()
     .domain([-maxAbs, 0, maxAbs])
@@ -356,7 +357,7 @@ function drawSexGrowthMap(data, year = currentYear) {
     .style("font-weight", "bold");
 
   // ============================
-  // 7. Llegenda
+  // 7. Llegenda (coherent amb diffPerBarri)
   // ============================
   const legendWidth = 220;
   const legendHeight = 12;
@@ -404,17 +405,12 @@ function drawSexGrowthMap(data, year = currentYear) {
     .style("font-size", "0.8rem");
 
   // ============================
-  // 8. Comptadors globals (increment ciutat)
+  // 8. Comptadors globals (TOTAL real de l'any actual)
   // ============================
   svg.selectAll(".sex-counter-group").remove();
 
-  const donesTotals =
-    d3.sum(mapYear, d => d[1].get("Dona") || 0) -
-    d3.sum(map2020, d => d[1].get("Dona") || 0);
-
-  const homesTotals =
-    d3.sum(mapYear, d => d[1].get("Home") || 0) -
-    d3.sum(map2020, d => d[1].get("Home") || 0);
+  const donesTotals = d3.sum(mapYear, d => d[1].get("Dona") || 0);
+  const homesTotals = d3.sum(mapYear, d => d[1].get("Home") || 0);
 
   const counterGroup = svg.append("g")
     .attr("class", "sex-counter-group")
@@ -432,7 +428,7 @@ function drawSexGrowthMap(data, year = currentYear) {
   counterGroup.append("text")
     .attr("x", 12)
     .attr("y", 22)
-    .text("Increment dones")
+    .text("Total dones")
     .style("font-size", "0.8rem")
     .style("fill", "#666");
 
@@ -447,7 +443,7 @@ function drawSexGrowthMap(data, year = currentYear) {
   counterGroup.append("text")
     .attr("x", 12)
     .attr("y", 62)
-    .text("Increment homes")
+    .text("Total homes")
     .style("font-size", "0.8rem")
     .style("fill", "#666");
 
