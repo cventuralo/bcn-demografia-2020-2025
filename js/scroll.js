@@ -21,6 +21,11 @@ function setActive(step) {
 }
 
 function updateVis(state) {
+  if (!barrisGeoJSON) {
+    console.warn("⏳ Esperant GeoJSON...");
+    return;
+  }
+
   switch (state) {
     case "base":
       drawBaseMap(nacionalitatData);

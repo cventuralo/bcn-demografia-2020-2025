@@ -1,4 +1,18 @@
+function normalitzaNom(nom) {
+  return nom
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/^el |^la |^els |^les /, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function drawBaseMap(data) {
+  if (!barrisGeoJSON || !barrisGeoJSON.features) {
+    console.warn("⏳ barrisGeoJSON encara no carregat");
+    return;
+  }
+
   clearMap();
 
   const svg = d3.select("#map");
@@ -12,18 +26,20 @@ function drawBaseMap(data) {
 
   const path = d3.geoPath().projection(projection);
 
-  // DEBUG (ens ajuda a verificar que hi ha dades)
-  console.log("Polígons:", barrisGeoJSON.features.length);
-  console.log("Exemple propietats:", barrisGeoJSON.features[0].properties);
+  // 🔎 Només barris reals
+  const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
+
+  console.log("Barris reals:", barris.length);
+  console.log("Exemple barri GEO:", barris[0].properties.NOM);
+  console.log("Exemple barri GEO normalitzat:", normalitzaNom(barris[0].properties.NOM));
+  console.log("Exemple CSV normalitzat:", normalitzaNom(data[0].Nom_Barri));
 
   // Agreguem població total per barri (any 2020)
   const poblacioPerBarri = d3.rollup(
     data.filter(d => d.Data_Referencia.startsWith("2020")),
     v => d3.sum(v, d => +d.Valor),
-    d => d.Nom_Barri
+    d => normalitzaNom(d.Nom_Barri)
   );
-
-  console.log("Exemple barri CSV:", data[0].Nom_Barri);
 
   const maxPoblacio = d3.max(Array.from(poblacioPerBarri.values()));
 
@@ -32,13 +48,13 @@ function drawBaseMap(data) {
     .interpolator(d3.interpolateBlues);
 
   svg.selectAll("path")
-    .data(barrisGeoJSON.features)
+    .data(barris)
     .enter()
     .append("path")
     .attr("d", path)
     .attr("fill", d => {
-      const nom = d.properties.NOM;
-      const valor = poblacioPerBarri.get(nom);
+      const nomGeo = normalitzaNom(d.properties.NOM);
+      const valor = poblacioPerBarri.get(nomGeo);
       return valor ? color(valor) : "#eee";
     })
     .attr("stroke", "#333")
@@ -55,6 +71,14 @@ function drawBaseMap(data) {
 
 function drawImpactMap(data) {
   clearMap();
+
+  const svg = d3.select("#map");
+  svg.append("text")
+    .attr("x", 20)
+    .attr("y", 30)
+    .text("Impacte de la pandèmia (pendent d'implementar)")
+    .style("font-size", "18px")
+    .style("font-weight", "bold");
 }
 
 function clearMap() {

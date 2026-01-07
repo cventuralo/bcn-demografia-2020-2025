@@ -19,4 +19,5 @@ Promise.all([
   barrisGeoJSON = barris;
 
   console.log("✅ CSV + GeoJSON carregats correctament");
+  console.log("Total features GeoJSON:", barrisGeoJSON.features.length);
 });
