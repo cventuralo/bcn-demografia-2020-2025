@@ -465,10 +465,6 @@ function drawSexGrowthMap(data, year = currentYear) {
     .domain([-maxAbs, maxAbs])
     .range([0, legendWidth]);
 
-  const legendAxis = d3.axisBottom(legendScale)
-    .ticks(5)
-    .tickFormat(d3.format("+,"));
-
   const defs = svg.append("defs");
 
   const linearGradient = defs.append("linearGradient")
@@ -489,10 +485,6 @@ function drawSexGrowthMap(data, year = currentYear) {
     .attr("width", legendWidth)
     .attr("height", legendHeight)
     .style("fill", "url(#legend-gradient)");
-
-  legendGroup.append("g")
-    .attr("transform", `translate(0, ${legendHeight})`)
-    .call(legendAxis);
 
   legendGroup.append("text")
     .attr("x", 0)
