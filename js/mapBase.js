@@ -241,7 +241,7 @@ function drawSexGrowthMap(data, year = currentYear) {
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
   // ============================
-  // 1. Pre-filtrar dades 2020 → year
+  // 1. Filtrar dades 2020 → year
   // ============================
   const dataFiltrada = data.filter(d => {
     const any = +d.Data_Referencia.slice(0, 4);
@@ -277,13 +277,13 @@ function drawSexGrowthMap(data, year = currentYear) {
   });
 
   // ============================
-  // 3. Escala divergent (fixa per aquest frame)
+  // 3. Escala divergent CORRECTA
   // ============================
   const maxAbs = d3.max(Array.from(diffPerBarri.values()).map(v => Math.abs(v))) || 1;
 
   const color = d3.scaleDiverging()
     .domain([-maxAbs, 0, maxAbs])
-    .interpolator(d3.interpolateRdBu);
+    .interpolator(t => d3.interpolateRdBu(1 - t));
 
   // ============================
   // 4. Dibuixar mapa
@@ -346,10 +346,10 @@ function drawSexGrowthMap(data, year = currentYear) {
     .style("font-weight", "bold");
 
   // ============================
-  // 6. Llegenda
+  // 6. Llegenda CORRECTA
   // ============================
-  const legendWidth = 200;
-  const legendHeight = 10;
+  const legendWidth = 220;
+  const legendHeight = 12;
 
   const legendGroup = svg.append("g")
     .attr("transform", `translate(${width - legendWidth - 40}, ${height - 40})`);
@@ -359,7 +359,8 @@ function drawSexGrowthMap(data, year = currentYear) {
     .range([0, legendWidth]);
 
   const legendAxis = d3.axisBottom(legendScale)
-    .ticks(5);
+    .ticks(5)
+    .tickFormat(d3.format("+,"));
 
   const defs = svg.append("defs");
 
@@ -388,7 +389,7 @@ function drawSexGrowthMap(data, year = currentYear) {
 
   legendGroup.append("text")
     .attr("x", 0)
-    .attr("y", -5)
-    .text("↑ Dones     Homes ↓")
+    .attr("y", -6)
+    .text("← Més homes       Més dones →")
     .style("font-size", "0.8rem");
 }
