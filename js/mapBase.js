@@ -5,10 +5,16 @@ function drawBaseMap(data) {
   const width = svg.node().clientWidth;
   const height = svg.node().clientHeight;
 
-  const projection = d3.geoMercator()
+  // 🔴 PROJECCIÓ CORRECTA PER EPSG:25831 (UTM)
+  const projection = d3.geoIdentity()
+    .reflectY(true)
     .fitSize([width, height], barrisGeoJSON);
 
   const path = d3.geoPath().projection(projection);
+
+  // DEBUG (ens ajuda a verificar que hi ha dades)
+  console.log("Polígons:", barrisGeoJSON.features.length);
+  console.log("Exemple propietats:", barrisGeoJSON.features[0].properties);
 
   // Agreguem població total per barri (any 2020)
   const poblacioPerBarri = d3.rollup(
@@ -16,6 +22,8 @@ function drawBaseMap(data) {
     v => d3.sum(v, d => +d.Valor),
     d => d.Nom_Barri
   );
+
+  console.log("Exemple barri CSV:", data[0].Nom_Barri);
 
   const maxPoblacio = d3.max(Array.from(poblacioPerBarri.values()));
 
@@ -29,24 +37,12 @@ function drawBaseMap(data) {
     .append("path")
     .attr("d", path)
     .attr("fill", d => {
-      const nom = d.properties.NOM || d.properties.NOM_BARRI;
+      const nom = d.properties.NOM;
       const valor = poblacioPerBarri.get(nom);
       return valor ? color(valor) : "#eee";
     })
     .attr("stroke", "#333")
-    .attr("stroke-width", 0.5)
-    .on("mouseover", function (event, d) {
-      d3.select(this).attr("stroke-width", 2);
-
-      const nom = d.properties.NOM || d.properties.NOM_BARRI;
-      const valor = poblacioPerBarri.get(nom) || 0;
-
-      showTooltip(event, `<strong>${nom}</strong><br/>Població (2020): ${valor}`);
-    })
-    .on("mouseout", function () {
-      d3.select(this).attr("stroke-width", 0.5);
-      hideTooltip();
-    });
+    .attr("stroke-width", 0.5);
 
   // Títol
   svg.append("text")
@@ -57,48 +53,10 @@ function drawBaseMap(data) {
     .style("font-weight", "bold");
 }
 
-
 function drawImpactMap(data) {
   clearMap();
-
-  const svg = d3.select("#map");
-  svg.append("text")
-    .attr("x", 20)
-    .attr("y", 30)
-    .text("Impacte de la pandèmia (pendent d'implementar)")
-    .style("font-size", "18px")
-    .style("font-weight", "bold");
 }
-
 
 function clearMap() {
   d3.select("#map").selectAll("*").remove();
-}
-
-
-// ===== TOOLTIP =====
-
-const tooltip = d3.select("body")
-  .append("div")
-  .attr("class", "tooltip")
-  .style("position", "absolute")
-  .style("background", "white")
-  .style("padding", "8px")
-  .style("border", "1px solid #ccc")
-  .style("border-radius", "4px")
-  .style("pointer-events", "none")
-  .style("opacity", 0);
-
-function showTooltip(event, html) {
-  tooltip
-    .html(html)
-    .style("left", (event.pageX + 10) + "px")
-    .style("top", (event.pageY + 10) + "px")
-    .transition()
-    .duration(200)
-    .style("opacity", 1);
-}
-
-function hideTooltip() {
-  tooltip.transition().duration(200).style("opacity", 0);
 }
