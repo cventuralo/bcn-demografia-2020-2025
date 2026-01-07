@@ -1,0 +1,19 @@
+let edatFrangesData;
+let edatExactaData;
+let nacionalitatData;
+let educacioData;
+
+Promise.all([
+  d3.csv("data/2020-2025_pad_mdba_sexe_edat-q.csv"),
+  d3.csv("data/2020-2025_pad_mdbas_edat-1.csv"),
+  d3.csv("data/2020-2025_pad_mdb_nacionalitat-regio_sexe.csv"),
+  d3.csv("data/2020-2025_pad_mdb_niv-educa-esta_edat-lloc-naix.csv")
+]).then(([edatFranges, edatExacta, nacionalitat, educacio]) => {
+
+  edatFrangesData = edatFranges;
+  edatExactaData = edatExacta;
+  nacionalitatData = nacionalitat;
+  educacioData = educacio;
+
+  console.log("✅ Totes les dades carregades");
+});

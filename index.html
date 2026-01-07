@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <title>Transformacions demogràfiques a Barcelona</title>
+
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Llibreries -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+
+<body>
+
+<main id="scrolly">
+
+  <section class="intro">
+    <h1>Transformacions demogràfiques als barris de Barcelona (2020–2025)</h1>
+    <p>
+      Anàlisi territorial de fluxos migratoris, estructura d’edat i nivell educatiu després de la pandèmia del 2020.
+    </p>
+  </section>
+
+  <section class="scrolly-section">
+
+    <div class="text">
+
+      <div class="step" data-step="base">
+        <h2>Distribució demogràfica inicial</h2>
+        <p>
+          Aquesta secció presenta una fotografia inicial de la distribució poblacional als barris de Barcelona l’any 2020.
+        </p>
+      </div>
+
+      <div class="step" data-step="impacte">
+        <h2>Impacte de la pandèmia</h2>
+        <p>
+          Variació percentual de la població resident per barri després de la pandèmia.
+        </p>
+      </div>
+
+      <div class="step" data-step="fluxos">
+        <h2>Fluxos migratoris</h2>
+        <p>
+          Reconfiguració dels orígens geogràfics de la població resident.
+        </p>
+      </div>
+
+      <div class="step" data-step="edat">
+        <h2>Estructura d’edat</h2>
+        <p>
+          Evolució de les franges d’edat als barris de Barcelona.
+        </p>
+      </div>
+
+      <div class="step" data-step="micro">
+        <h2>Microanàlisi per secció censal</h2>
+        <p>
+          Heterogeneïtats internes dins d’un mateix barri a partir de l’edat exacta.
+        </p>
+      </div>
+
+      <div class="step" data-step="educacio">
+        <h2>Nivell educatiu i territori</h2>
+        <p>
+          Distribució territorial del nivell educatiu i possibles indicadors de gentrificació.
+        </p>
+      </div>
+
+      <div class="step" data-step="conclusio">
+        <h2>Síntesi i reflexió final</h2>
+        <p>
+          Síntesi de les dinàmiques observades i reflexió final.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="vis">
+      <svg id="map"></svg>
+    </div>
+
+  </section>
+
+</main>
+
+<script src="js/main.js"></script>
+<script src="js/scroll.js"></script>
+<script src="js/mapBase.js"></script>
+<script src="js/flows.js"></script>
+<script src="js/ageStructure.js"></script>
+<script src="js/censusMicro.js"></script>
+<script src="js/education.js"></script>
+
+</body>
+</html>
