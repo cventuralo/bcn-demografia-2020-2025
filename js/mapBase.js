@@ -209,3 +209,182 @@ if (yearSlider && yearLabel && playBtn) {
   });
 
 }
+
+function drawSexGrowthMap(data, year = currentYear) {
+  if (!barrisGeoJSON || !barrisGeoJSON.features) {
+    console.warn("⏳ barrisGeoJSON encara no carregat");
+    return;
+  }
+
+  clearMap();
+
+  const svg = d3.select("#map");
+  const width = svg.node().clientWidth;
+  const height = svg.node().clientHeight;
+
+  const projection = d3.geoIdentity()
+    .reflectY(true)
+    .fitSize([width, height], barrisGeoJSON);
+
+  const path = d3.geoPath().projection(projection);
+
+  const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
+
+  // ============================
+  // 1. Filtrar 2020 i currentYear
+  // ============================
+  const data2020 = data.filter(d => d.Data_Referencia.startsWith("2020"));
+  const dataYear = data.filter(d => d.Data_Referencia.startsWith(year.toString()));
+
+  // ============================
+  // 2. Agrupar per barri + sexe
+  // ============================
+  function agrupaPerBarriISexe(dataset) {
+    return d3.rollup(
+      dataset,
+      v => d3.sum(v, d => +d.Valor),
+      d => normalitzaNom(d.Nom_Barri),
+      d => d.Sexe
+    );
+  }
+
+  const map2020 = agrupaPerBarriISexe(data2020);
+  const mapYear = agrupaPerBarriISexe(dataYear);
+
+  // ============================
+  // 3. Calcular diferència (year - 2020)
+  // ============================
+  const diffPerBarri = new Map();
+
+  barris.forEach(b => {
+    const nom = normalitzaNom(b.properties.NOM);
+
+    const homes2020 = map2020.get(nom)?.get("Home") || 0;
+    const dones2020 = map2020.get(nom)?.get("Dona") || 0;
+
+    const homesYear = mapYear.get(nom)?.get("Home") || 0;
+    const donesYear = mapYear.get(nom)?.get("Dona") || 0;
+
+    const diffHomes = homesYear - homes2020;
+    const diffDones = donesYear - dones2020;
+
+    // positiu = creixen més dones | negatiu = creixen més homes
+    diffPerBarri.set(nom, diffDones - diffHomes);
+  });
+
+  // ============================
+  // 4. Escala divergent GLOBAL (fixa)
+  // ============================
+  const maxAbs = d3.max(Array.from(diffPerBarri.values()).map(v => Math.abs(v))) || 1;
+
+  const color = d3.scaleDiverging()
+    .domain([-maxAbs, 0, maxAbs])
+    .interpolator(d3.interpolateRdBu);
+
+  // ============================
+  // 5. Dibuixar mapa
+  // ============================
+  svg.selectAll("path")
+    .data(barris)
+    .enter()
+    .append("path")
+    .attr("d", path)
+    .attr("fill", d => {
+      const nom = normalitzaNom(d.properties.NOM);
+      const valor = diffPerBarri.get(nom) || 0;
+      return color(valor);
+    })
+    .attr("stroke", "#333")
+    .attr("stroke-width", 0.5)
+    .on("mouseover", function (event, d) {
+      d3.select(this)
+        .attr("stroke-width", 2)
+        .attr("stroke", "#000");
+
+      const nom = normalitzaNom(d.properties.NOM);
+      const valor = diffPerBarri.get(nom) || 0;
+
+      let text;
+      if (valor > 0) {
+        text = `+${valor.toLocaleString()} dones`;
+      } else if (valor < 0) {
+        text = `+${Math.abs(valor).toLocaleString()} homes`;
+      } else {
+        text = "Equilibri";
+      }
+
+      showTooltip(
+        event,
+        `<strong>${d.properties.NOM}</strong><br/>Balanç per sexe (2020–${year}): ${text}`
+      );
+    })
+    .on("mousemove", function (event) {
+      tooltip
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY + 10) + "px");
+    })
+    .on("mouseout", function () {
+      d3.select(this)
+        .attr("stroke-width", 0.5)
+        .attr("stroke", "#333");
+
+      hideTooltip();
+    });
+
+  // ============================
+  // 6. Títol
+  // ============================
+  svg.append("text")
+    .attr("x", 20)
+    .attr("y", 30)
+    .text(`Balanç de creixement per sexe (2020–${year})`)
+    .style("font-size", "18px")
+    .style("font-weight", "bold");
+
+  // ============================
+  // 7. Llegenda
+  // ============================
+  const legendWidth = 200;
+  const legendHeight = 10;
+
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${width - legendWidth - 40}, ${height - 40})`);
+
+  const legendScale = d3.scaleLinear()
+    .domain([-maxAbs, maxAbs])
+    .range([0, legendWidth]);
+
+  const legendAxis = d3.axisBottom(legendScale)
+    .ticks(5);
+
+  const defs = svg.append("defs");
+
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient");
+
+  linearGradient.selectAll("stop")
+    .data([
+      { offset: "0%", color: color(-maxAbs) },
+      { offset: "50%", color: color(0) },
+      { offset: "100%", color: color(maxAbs) }
+    ])
+    .enter()
+    .append("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
+
+  legendGroup.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(legendAxis);
+
+  legendGroup.append("text")
+    .attr("x", 0)
+    .attr("y", -5)
+    .text("↑ Dones     Homes ↓")
+    .style("font-size", "0.8rem");
+}

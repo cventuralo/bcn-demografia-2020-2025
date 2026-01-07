@@ -33,6 +33,9 @@ function updateVis(state) {
     case "impacte":
       drawImpactMap(edatFrangesData);
       break;
+    case "sexe":
+      drawSexGrowthMap(nacionalitatData, currentYear);
+      break;
     case "fluxos":
       drawFlows(nacionalitatData);
       break;
