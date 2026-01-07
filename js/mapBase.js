@@ -187,7 +187,11 @@ if (yearSlider && yearLabel && playBtn) {
   yearSlider.addEventListener("input", e => {
     currentYear = +e.target.value;
     yearLabel.textContent = currentYear;
-    drawBaseMap(nacionalitatData, currentYear);
+    if (currentStep === "base") {
+      drawBaseMap(nacionalitatData, currentYear);
+    } else if (currentStep === "sexe") {
+      drawSexGrowthMap(nacionalitatData, currentYear);
+    }
   });
 
   playBtn.addEventListener("click", () => {
@@ -203,7 +207,13 @@ if (yearSlider && yearLabel && playBtn) {
 
         yearSlider.value = currentYear;
         yearLabel.textContent = currentYear;
-        drawBaseMap(nacionalitatData, currentYear);
+
+        if (currentStep === "base") {
+          drawBaseMap(nacionalitatData, currentYear);
+        } else if (currentStep === "sexe") {
+          drawSexGrowthMap(nacionalitatData, currentYear);
+        }
+
       }, 1200);
     }
   });

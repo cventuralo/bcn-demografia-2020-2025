@@ -1,3 +1,5 @@
+let currentStep = "base";
+
 gsap.registerPlugin(ScrollTrigger);
 
 gsap.utils.toArray(".step").forEach(step => {
@@ -26,6 +28,8 @@ function updateVis(state) {
     return;
   }
 
+  currentStep = state;
+  
   switch (state) {
     case "base":
       drawBaseMap(nacionalitatData, currentYear);
