@@ -305,7 +305,7 @@ if (yearSlider && yearLabel && playBtn) {
         yearLabel.textContent = currentYear;
 
         if (currentStep === "base") {
-          drawBaseMap(nacionalitatData, currentYear);
+          drawPopulationGrowthMap(nacionalitatData, currentYear);
         } else if (currentStep === "sexe") {
           drawSexGrowthMap(nacionalitatData, currentYear);
         }
