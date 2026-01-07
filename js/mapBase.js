@@ -63,6 +63,7 @@ function drawBaseMap(data) {
   console.log("Exemple CSV normalitzat:", normalitzaNom(data[0].Nom_Barri));
 
   // Agregació població per barri (2020)
+  console.log("Data:", data);
   const poblacioPerBarri = d3.rollup(
     data.filter(d => d.Data_Referencia.startsWith("2020")),
     v => d3.sum(v, d => +d.Valor),
