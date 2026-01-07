@@ -283,7 +283,7 @@ function drawSexGrowthMap(data, year = currentYear) {
 
   const color = d3.scaleDiverging()
     .domain([-maxAbs, 0, maxAbs])
-    .interpolator(t => d3.interpolateRdBu(1 - t));
+    .interpolator(t => d3.interpolateRdBu(1 - t)); // invertim perquè vermell = dones, blau = homes
 
   // ============================
   // 4. Dibuixar mapa
@@ -346,7 +346,7 @@ function drawSexGrowthMap(data, year = currentYear) {
     .style("font-weight", "bold");
 
   // ============================
-  // 6. Llegenda CORRECTA
+  // 6. Llegenda (baix a la dreta)
   // ============================
   const legendWidth = 220;
   const legendHeight = 12;
@@ -392,4 +392,69 @@ function drawSexGrowthMap(data, year = currentYear) {
     .attr("y", -6)
     .text("← Més homes       Més dones →")
     .style("font-size", "0.8rem");
+
+  // ============================
+  // 7. COMPTADORS dins l’SVG (top-right)
+  // ============================
+  // esborrem si ja existeixen
+  svg.selectAll(".sex-counter-group").remove();
+
+  const marginRight = 20;
+  const marginTop = 20;
+
+  const counterGroup = svg.append("g")
+    .attr("class", "sex-counter-group")
+    .attr("transform", `translate(${width - 220 - marginRight}, ${marginTop})`);
+
+  const donesTotals = d3.sum(
+    dataFiltrada.filter(d => d.SEXE === 1 || d.SEXE === "1"),
+    d => +d.Valor
+  );
+
+  const homesTotals = d3.sum(
+    dataFiltrada.filter(d => d.SEXE === 2 || d.SEXE === "2"),
+    d => +d.Valor
+  );
+
+  // fons
+  counterGroup.append("rect")
+    .attr("width", 220)
+    .attr("height", 80)
+    .attr("rx", 6)
+    .attr("ry", 6)
+    .attr("fill", "white")
+    .attr("opacity", 0.85)
+    .attr("stroke", "#ccc");
+
+  // Dones
+  counterGroup.append("text")
+    .attr("x", 12)
+    .attr("y", 22)
+    .text("Dones acumulades")
+    .style("font-size", "0.8rem")
+    .style("fill", "#666");
+
+  counterGroup.append("text")
+    .attr("x", 12)
+    .attr("y", 42)
+    .text(donesTotals.toLocaleString())
+    .style("font-size", "1.2rem")
+    .style("font-weight", "bold")
+    .style("fill", "#b30000");
+
+  // Homes
+  counterGroup.append("text")
+    .attr("x", 12)
+    .attr("y", 62)
+    .text("Homes acumulats")
+    .style("font-size", "0.8rem")
+    .style("fill", "#666");
+
+  counterGroup.append("text")
+    .attr("x", 12)
+    .attr("y", 80)
+    .text(homesTotals.toLocaleString())
+    .style("font-size", "1.2rem")
+    .style("font-weight", "bold")
+    .style("fill", "#1f4ed8");
 }
