@@ -45,7 +45,7 @@ function hideTooltip() {
 }
 
 // ======================
-// Mapa base
+// Mapa base (ACUMULATIU)
 // ======================
 function drawBaseMap(data, year = currentYear) {
   if (!barrisGeoJSON || !barrisGeoJSON.features) {
@@ -68,9 +68,12 @@ function drawBaseMap(data, year = currentYear) {
   // Només barris reals
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
-  // Agregació població per barri per any
+  // 🔴 ACUMULACIÓ: sumem des de 2020 fins a l'any actual
   const poblacioPerBarri = d3.rollup(
-    data.filter(d => d.Data_Referencia.startsWith(year.toString())),
+    data.filter(d => {
+      const any = +d.Data_Referencia.slice(0, 4);
+      return any >= 2020 && any <= year;
+    }),
     v => d3.sum(v, d => +d.Valor),
     d => normalitzaNom(d.Nom_Barri)
   );
@@ -101,7 +104,7 @@ function drawBaseMap(data, year = currentYear) {
       const nom = d.properties.NOM;
       const valor = poblacioPerBarri.get(normalitzaNom(nom)) || 0;
 
-      showTooltip(event, `<strong>${nom}</strong><br/>Població (${year}): ${valor.toLocaleString()}`);
+      showTooltip(event, `<strong>${nom}</strong><br/>Població acumulada (2020–${year}): ${valor.toLocaleString()}`);
     })
     .on("mousemove", function (event) {
       tooltip
@@ -120,7 +123,7 @@ function drawBaseMap(data, year = currentYear) {
   svg.append("text")
     .attr("x", 20)
     .attr("y", 30)
-    .text(`Distribució de la població per barri (${year})`)
+    .text(`Població acumulada per barri (2020–${year})`)
     .style("font-size", "18px")
     .style("font-weight", "bold");
 }
