@@ -35,7 +35,7 @@ function updateVis(state) {
       drawPopulationGrowthMap(nacionalitatData, currentYear);
       break;
     case "impacte":
-      drawImpactMap(edatFrangesData);
+      drawImpactMap(nacionalitatData);
       break;
     case "sexe":
       drawSexGrowthMap(nacionalitatData, currentYear);
@@ -47,7 +47,7 @@ function updateVis(state) {
       drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup);
       break;  
     case "micro":
-      drawCensusMicro(edatExactaData);
+      drawCensusMicro(nacionalitatData);
       break;
     case "educacio":
       drawEducation(educacioData);
