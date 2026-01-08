@@ -1,70 +1,59 @@
-function drawPopulationGrowthMap(data, year = currentYear) {
-  if (!barrisGeoJSON || !barrisGeoJSON.features) {
-    console.warn("⏳ barrisGeoJSON encara no carregat");
-    return;
-  }
+// =========================================
+// POPULATION GROWTH MAP – BCN
+// Increment població per barri + totals BCN
+// =========================================
 
-  clearMap();
 
-  const svg = d3.select("#map");
-  const width = svg.node().clientWidth;
-  const height = svg.node().clientHeight;
+// =========================
+// CÀLCULS
+// =========================
 
-  const projection = d3.geoIdentity()
-    .reflectY(true)
-    .fitSize([width, height], barrisGeoJSON);
-
-  const path = d3.geoPath().projection(projection);
-
-  const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
-
-  // =========================
-  // Dades 2020 i any actual
-  // =========================
+function computePopulationMaps(data, year) {
   const data2020 = data.filter(d => d.Data_Referencia.startsWith("2020"));
   const dataYear = data.filter(d => d.Data_Referencia.startsWith(year.toString()));
 
-  function mapPerBarri(dataset) {
-    return d3.rollup(
-      dataset,
-      v => d3.sum(v, d => +d.Valor),
-      d => normalitzaNom(d.Nom_Barri)
-    );
-  }
+  const mapPerBarri = (dataset) => d3.rollup(
+    dataset,
+    v => d3.sum(v, d => +d.Valor),
+    d => normalitzaNom(d.Nom_Barri)
+  );
 
-  const map2020 = mapPerBarri(data2020);
-  const mapYear = mapPerBarri(dataYear);
+  return {
+    map2020: mapPerBarri(data2020),
+    mapYear: mapPerBarri(dataYear),
+    total2020: d3.sum(data2020, d => +d.Valor),
+    totalYear: d3.sum(dataYear, d => +d.Valor)
+  };
+}
 
-  // =========================
-  // Increment per barri
-  // =========================
+
+function computeDiffPerBarri(barris, map2020, mapYear) {
   const diffPerBarri = new Map();
 
   barris.forEach(b => {
     const nom = normalitzaNom(b.properties.NOM);
-    const val2020 = map2020.get(nom) || 0;
-    const valYear = mapYear.get(nom) || 0;
-    diffPerBarri.set(nom, valYear - val2020);
+    const v2020 = map2020.get(nom) || 0;
+    const vYear = mapYear.get(nom) || 0;
+    diffPerBarri.set(nom, vYear - v2020);
   });
 
-  const values = Array.from(diffPerBarri.values());
-  const maxVal = d3.max(values) || 1;
+  return diffPerBarri;
+}
 
-  const color = d3.scaleSequential()
-    .domain([0, maxVal])
-    .interpolator(d3.interpolateBlues);
 
-  // =========================
-  // Dibuix mapa
-  // =========================
+// =========================
+// DIBUIX MAPA
+// =========================
+
+function drawPopulationMap(svg, barris, path, diffPerBarri, color, year) {
   svg.selectAll("path")
     .data(barris)
     .enter()
     .append("path")
     .attr("d", path)
     .attr("fill", d => {
-      const valor = diffPerBarri.get(normalitzaNom(d.properties.NOM)) || 0;
-      return valor > 0 ? color(valor) : "#eee";
+      const val = diffPerBarri.get(normalitzaNom(d.properties.NOM)) || 0;
+      return val > 0 ? color(val) : "#eee";
     })
     .attr("stroke", "#333")
     .attr("stroke-width", 0.5)
@@ -74,7 +63,8 @@ function drawPopulationGrowthMap(data, year = currentYear) {
 
       showTooltip(
         event,
-        `<strong>${nom}</strong><br/>Increment població (2020–${year}): ${valor >= 0 ? "+" : ""}${valor.toLocaleString()}`
+        `<strong>${nom}</strong><br/>
+         Increment població (2020–${year}): ${valor >= 0 ? "+" : ""}${valor.toLocaleString()}`
       );
     })
     .on("mousemove", e => {
@@ -83,29 +73,35 @@ function drawPopulationGrowthMap(data, year = currentYear) {
         .style("top", (e.pageY + 10) + "px");
     })
     .on("mouseout", hideTooltip);
+}
 
-  // =========================
-  // Títol
-  // =========================
+
+// =========================
+// TÍTOL
+// =========================
+
+function drawPopulationTitle(svg, year) {
   svg.append("text")
     .attr("x", 20)
     .attr("y", 30)
     .text(`Increment total de població per barri (2020–${year})`)
     .style("font-size", "18px")
     .style("font-weight", "bold");
+}
 
-  // =========================
-  // Comptador TOTAL BCN (dalt dreta)  ✅ NO TOCAT
-  // =========================
+
+// =========================
+// COMPTADOR TOTAL BCN (DALT DRETA)
+// =========================
+
+function drawTotalPopulationCounter(svg, width, totalYear) {
   svg.selectAll(".population-counter-group").remove();
 
-  const totalPoblacio = d3.sum(mapYear, d => d[1] || 0);
-
-  const counterGroup = svg.append("g")
+  const group = svg.append("g")
     .attr("class", "population-counter-group")
     .attr("transform", `translate(${width - 240}, 20)`);
 
-  counterGroup.append("rect")
+  group.append("rect")
     .attr("width", 220)
     .attr("height", 60)
     .attr("rx", 10)
@@ -114,40 +110,42 @@ function drawPopulationGrowthMap(data, year = currentYear) {
     .attr("opacity", 0.95)
     .attr("stroke", "#ccc");
 
-  counterGroup.append("text")
+  group.append("text")
     .attr("x", 12)
     .attr("y", 22)
     .text("Total població BCN")
     .style("font-size", "0.8rem")
     .style("fill", "#666");
 
-  counterGroup.append("text")
+  group.append("text")
     .attr("x", 12)
     .attr("y", 44)
-    .text(totalPoblacio.toLocaleString())
+    .text(totalYear.toLocaleString())
     .style("font-size", "1.4rem")
     .style("font-weight", "bold")
     .style("fill", "#111");
+}
 
-  // =========================
-  // Comptador INCREMENT BCN (esquerra centrat)  🟢 CORRECTE: totalYear - total2020
-  // =========================
+
+// =========================
+// COMPTADOR INCREMENT BCN (ESQUERRA CENTRAT)
+// =========================
+
+function drawPopulationIncrementCounter(svg, height, year, total2020, totalYear) {
   svg.selectAll(".population-increment-counter-group").remove();
 
-  const total2020 = d3.sum(data2020, d => +d.Valor);
-  const totalYear = d3.sum(dataYear, d => +d.Valor);
-  const incrementBCN = totalYear - total2020;
+  const increment = totalYear - total2020;
 
-  const boxWidth = 240;
-  const boxHeight = 95;
+  const boxWidth = 200;
+  const boxHeight = 90;
   const xPos = 30;
   const yPos = (height / 2) - (boxHeight / 2);
 
-  const incGroup = svg.append("g")
+  const group = svg.append("g")
     .attr("class", "population-increment-counter-group")
     .attr("transform", `translate(${xPos}, ${yPos})`);
 
-  incGroup.append("rect")
+  group.append("rect")
     .attr("width", boxWidth)
     .attr("height", boxHeight)
     .attr("rx", 14)
@@ -156,7 +154,7 @@ function drawPopulationGrowthMap(data, year = currentYear) {
     .attr("stroke", "#ddd")
     .attr("opacity", 0.97);
 
-  incGroup.append("text")
+  group.append("text")
     .attr("x", 16)
     .attr("y", 28)
     .text("Increment BCN")
@@ -164,24 +162,28 @@ function drawPopulationGrowthMap(data, year = currentYear) {
     .style("font-weight", "bold")
     .style("fill", "#111");
 
-  incGroup.append("text")
+  group.append("text")
     .attr("x", 16)
     .attr("y", 48)
     .text(`2020 – ${year}`)
     .style("font-size", "0.8rem")
     .style("fill", "#666");
 
-  incGroup.append("text")
+  group.append("text")
     .attr("x", 16)
     .attr("y", 78)
-    .text(`${incrementBCN >= 0 ? "+" : ""}${incrementBCN.toLocaleString()} habitants`)
+    .text(`${increment >= 0 ? "+" : ""}${increment.toLocaleString()} habitants`)
     .style("font-size", "1.4rem")
     .style("font-weight", "bold")
-    .style("fill", incrementBCN >= 0 ? "#2563eb" : "#b91c1c");
+    .style("fill", increment >= 0 ? "#2563eb" : "#b91c1c");
+}
 
-  // =========================
-  // Llegenda
-  // =========================
+
+// =========================
+// LLEGENDA
+// =========================
+
+function drawPopulationLegend(svg, width, height, color, maxVal) {
   svg.selectAll(".population-legend-group").remove();
 
   const legendWidth = 180;
@@ -196,9 +198,7 @@ function drawPopulationGrowthMap(data, year = currentYear) {
   const linearGradient = defs.append("linearGradient")
     .attr("id", "legend-gradient-pop")
     .attr("x1", "0%")
-    .attr("x2", "100%")
-    .attr("y1", "0%")
-    .attr("y2", "0%");
+    .attr("x2", "100%");
 
   linearGradient.selectAll("stop")
     .data([
@@ -239,4 +239,50 @@ function drawPopulationGrowthMap(data, year = currentYear) {
     .text("Increment població")
     .style("font-size", "0.75rem")
     .style("fill", "#444");
+}
+
+
+// =========================
+// FUNCIÓ PRINCIPAL
+// =========================
+
+function drawPopulationGrowthMap(data, year = currentYear) {
+  if (!barrisGeoJSON || !barrisGeoJSON.features) {
+    console.warn("⏳ barrisGeoJSON encara no carregat");
+    return;
+  }
+
+  clearMap();
+
+  const svg = d3.select("#map");
+  const width = svg.node().clientWidth;
+  const height = svg.node().clientHeight;
+
+  const projection = d3.geoIdentity()
+    .reflectY(true)
+    .fitSize([width, height], barrisGeoJSON);
+
+  const path = d3.geoPath().projection(projection);
+
+  const barris = barrisGeoJSON.features.filter(
+    d => d.properties.TIPUS_UA === "BARRI"
+  );
+
+  // Càlculs
+  const { map2020, mapYear, total2020, totalYear } = computePopulationMaps(data, year);
+  const diffPerBarri = computeDiffPerBarri(barris, map2020, mapYear);
+
+  const values = Array.from(diffPerBarri.values());
+  const maxVal = d3.max(values) || 1;
+
+  const color = d3.scaleSequential()
+    .domain([0, maxVal])
+    .interpolator(d3.interpolateBlues);
+
+  // Dibuix
+  drawPopulationMap(svg, barris, path, diffPerBarri, color, year);
+  drawPopulationTitle(svg, year);
+  drawTotalPopulationCounter(svg, width, totalYear);
+  drawPopulationIncrementCounter(svg, height, year, total2020, totalYear);
+  drawPopulationLegend(svg, width, height, color, maxVal);
 }
