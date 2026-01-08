@@ -22,11 +22,19 @@ Promise.all([
   dimensionsData = dimensions;
   barrisGeoJSON = barris;
 
-  dimensions
-    .filter(d => d.Codi_Dimensio === "NACIONALITAT_REGIO")
-    .forEach(d => {
-      regionLabels.set(d.Codi_Valor, d.Desc_Valor_CA);
-    });
+  dimensions.forEach(d => {
+    const dim = (d.Codi_Dimensio || "").trim();
+    const code = (d.Codi_Valor || "").trim();
+    const label = (d.Desc_Valor_CA || "").trim();
+
+    if (dim === "NACIONALITAT_REGIO" && code !== "") {
+      regionLabels.set(code, label);
+    }
+  });
+
+  console.log("🟢 Regions carregades:", regionLabels.size);
+  console.log("🟢 Exemple regions:", Array.from(regionLabels.entries()).slice(0, 10));
+
 
   console.log("✅ CSV + GeoJSON carregats correctament");
   console.log("Regions carregades:", regionLabels.size);
