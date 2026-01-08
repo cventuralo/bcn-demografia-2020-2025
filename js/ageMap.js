@@ -135,7 +135,7 @@ function drawAgeGroupGrowthMap(data, year = currentYear, ageGroup = currentAgeGr
     .enter()
     .append("g")
     .attr("class", "age-option")
-    .attr("transform", (d, i) => `translate(12, ${28 + i * 24})`)
+    .attr("transform", (d, i) => `translate(16, ${44 + i * 30})`)
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       currentAgeGroup = d;
@@ -144,10 +144,10 @@ function drawAgeGroupGrowthMap(data, year = currentYear, ageGroup = currentAgeGr
 
   // Fons highlight
   optionGroups.append("rect")
-    .attr("x", -6)
-    .attr("y", -14)
-    .attr("width", 180)
-    .attr("height", 22)
+    .attr("x", -8)
+    .attr("y", -16)
+    .attr("width", 190)
+    .attr("height", 26)
     .attr("rx", 4)
     .attr("ry", 4)
     .attr("fill", d => d === currentAgeGroup ? "#eef2ff" : "transparent");
@@ -169,12 +169,13 @@ function drawAgeGroupGrowthMap(data, year = currentYear, ageGroup = currentAgeGr
     .style("font-weight", d => d === currentAgeGroup ? "bold" : "normal");
 
 
-  selectorGroup.append("text")
-    .attr("x", 12)
-    .attr("y", 18)
-    .text("Franja d’edat")
-    .style("font-size", "0.75rem")
-    .style("fill", "#999");
+    selectorGroup.append("text")
+    .attr("x", 16)
+    .attr("y", 24)
+    .text("Franja d'edat")
+    .style("font-size", "0.9rem")
+    .style("font-weight", "bold")
+    .style("fill", "#444");
 
   // ============================
   // 7. Llegenda
