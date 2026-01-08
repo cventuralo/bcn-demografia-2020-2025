@@ -21,15 +21,18 @@ function loadRegionLabels(dimensionsData) {
   regionLabels.clear();
 
   dimensionsData.forEach(d => {
-    if (d.Codi_Dimensio === "NACIONALITAT_REGIO") {
-      regionLabels.set(d.Codi_Valor, d.Desc_Valor_CA);
+    const dimDesc = (d.Desc_Dimensio || "").trim();
+    const code = (d.Codi_Valor || "").trim();
+    const label = (d.Desc_Valor_CA || "").trim();
+
+    if (dimDesc === "NACIONALITAT_REGIO" && code !== "") {
+      regionLabels.set(code, label);
     }
   });
 
   console.log("🟢 Regions carregades:", regionLabels.size);
   console.log("🟢 Exemple regions:", Array.from(regionLabels.entries()).slice(0, 5));
 }
-
 
 // ===============================
 // TOP 10 regions per creixement 2020–2025
