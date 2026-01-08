@@ -4,7 +4,6 @@ let nacionalitatData;
 let educacioData;
 let barrisGeoJSON;
 let dimensionsData;
-let regionLabels = new Map();
 
 Promise.all([
   d3.csv("data/2020-2025_pad_mdba_sexe_edat-q.csv"),
@@ -22,23 +21,11 @@ Promise.all([
   dimensionsData = dimensions;
   barrisGeoJSON = barris;
 
-  console.log("🧪 Dimensions columns:", Object.keys(dimensions[0]));
-
-  dimensions.forEach(d => {
-    const dimDesc = (d.Desc_Dimensio || "").trim();
-    const code = (d.Codi_Valor || "").trim();
-    const label = (d.Desc_Valor_CA || "").trim();
-
-    if (dimDesc === "NACIONALITAT_REGIO" && code !== "") {
-      regionLabels.set(code, label);
-    }
-  });
-
-  // console.log("🟢 Regions carregades:", regionLabels.size);
-  // console.log("🟢 Exemple regions:", Array.from(regionLabels.entries()).slice(0, 10));
+  // 🔵 carregar labels de regions (FUNCIO A regionMap.js)
+  loadRegionLabels(dimensionsData);
 
   console.log("✅ CSV + GeoJSON carregats correctament");
-  console.log("Regions carregades:", regionLabels.size);
+  console.log("🟢 Regions carregades:", regionLabels.size);
 
 }).catch(err => {
   console.error("❌ Error carregant dades:", err);

@@ -72,9 +72,9 @@ function drawRegionSelector(svg, width, regions) {
 
   const selectorGroup = svg.append("g")
     .attr("class", "region-selector-group")
-    .attr("transform", `translate(${width - 300}, 30)`); // 🔵 DALT A LA DRETA
+    .attr("transform", `translate(${width - 300}, 30)`);
 
-  const boxHeight = 50 + regions.length * 32;
+  const boxHeight = 50 + regions.length * 30;
 
   selectorGroup.append("rect")
     .attr("width", 280)
@@ -98,7 +98,7 @@ function drawRegionSelector(svg, width, regions) {
     .enter()
     .append("g")
     .attr("class", "region-option")
-    .attr("transform", (d, i) => `translate(18, ${60 + i * 30})`)
+    .attr("transform", (d, i) => `translate(18, ${60 + i * 28})`)
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       selectedRegion = d;
@@ -107,9 +107,9 @@ function drawRegionSelector(svg, width, regions) {
 
   options.append("rect")
     .attr("x", -10)
-    .attr("y", -16)
+    .attr("y", -14)
     .attr("width", 250)
-    .attr("height", 26)
+    .attr("height", 24)
     .attr("rx", 6)
     .attr("ry", 6)
     .attr("fill", d => d === selectedRegion ? "#e8efff" : "transparent");
@@ -141,7 +141,7 @@ function drawRegionLegend(svg, height, color, maxAbs) {
 
   const legendGroup = svg.append("g")
     .attr("class", "region-legend-group")
-    .attr("transform", `translate(40, ${height - 40})`); // 🔵 BAIX ESQUERRA
+    .attr("transform", `translate(40, ${height - 40})`);
 
   const defs = svg.append("defs");
 
@@ -195,17 +195,11 @@ function drawRegionGrowthMap(data, year = currentYear) {
 
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
-  // =========================
-  // Init topRegions una vegada
-  // =========================
   if (topRegions.length === 0) {
     topRegions = computeTopRegionsByGrowth(data);
     selectedRegion = topRegions[0];
   }
 
-  // =========================
-  // Filtrar dades
-  // =========================
   const data2020 = data.filter(d =>
     d.Data_Referencia.startsWith("2020") &&
     d.NACIONALITAT_REGIO === selectedRegion
@@ -225,9 +219,6 @@ function drawRegionGrowthMap(data, year = currentYear) {
   const map2020 = sumByBarri(data2020);
   const mapYear = sumByBarri(dataYear);
 
-  // =========================
-  // Diferència per barri
-  // =========================
   const diffPerBarri = new Map();
 
   barris.forEach(b => {
@@ -244,31 +235,21 @@ function drawRegionGrowthMap(data, year = currentYear) {
     .domain([-maxAbs, 0, maxAbs])
     .interpolator(d3.interpolateRdBu);
 
-  // =========================
-  // Dibuix mapa
-  // =========================
   svg.selectAll("path")
     .data(barris)
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("fill", d => {
-      const val = diffPerBarri.get(normalitzaNom(d.properties.NOM)) || 0;
-      return color(val);
-    })
+    .attr("fill", d => color(diffPerBarri.get(normalitzaNom(d.properties.NOM)) || 0))
     .attr("stroke", "#333")
     .attr("stroke-width", 0.5)
     .on("mouseover", function (event, d) {
       const nom = d.properties.NOM;
       const valor = diffPerBarri.get(normalitzaNom(nom)) || 0;
 
-      const txt = valor >= 0
-        ? `+${valor.toLocaleString()}`
-        : `${valor.toLocaleString()}`;
-
       showTooltip(
         event,
-        `<strong>${nom}</strong><br/>${getRegionLabel(selectedRegion)}<br/>Canvi (2020–${year}): ${txt}`
+        `<strong>${nom}</strong><br/>${getRegionLabel(selectedRegion)}<br/>Canvi (2020–${year}): ${valor >= 0 ? "+" : ""}${valor.toLocaleString()}`
       );
     })
     .on("mousemove", e => {
@@ -278,9 +259,6 @@ function drawRegionGrowthMap(data, year = currentYear) {
     })
     .on("mouseout", hideTooltip);
 
-  // =========================
-  // Títol
-  // =========================
   svg.append("text")
     .attr("x", 20)
     .attr("y", 30)
@@ -288,9 +266,6 @@ function drawRegionGrowthMap(data, year = currentYear) {
     .style("font-size", "18px")
     .style("font-weight", "bold");
 
-  // =========================
-  // Selector + Llegenda
-  // =========================
   drawRegionSelector(svg, width, topRegions);
   drawRegionLegend(svg, height, color, maxAbs);
 }
