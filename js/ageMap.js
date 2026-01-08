@@ -177,8 +177,8 @@ function drawAgeGroupCounter(svg, height, ageGroup, year, total2020, totalYear) 
 
   const diff = totalYear - total2020;
 
-  const boxWidth = 240;
-  const boxHeight = 95;
+  const boxWidth = 200;
+  const boxHeight = 90;
   const xPos = 30;
   const yPos = (height / 2) - (boxHeight / 2);
 
@@ -214,7 +214,7 @@ function drawAgeGroupCounter(svg, height, ageGroup, year, total2020, totalYear) 
     .attr("x", 16)
     .attr("y", 78)
     .text(`${diff >= 0 ? "+" : ""}${diff.toLocaleString()} persones`)
-    .style("font-size", "1.4rem")
+    .style("font-size", "1.3rem")
     .style("font-weight", "bold")
     .style("fill", diff >= 0 ? "#2563eb" : "#b91c1c");
 }

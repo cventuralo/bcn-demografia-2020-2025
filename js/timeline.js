@@ -15,7 +15,7 @@ if (yearSlider && yearLabel && playBtn) {
       drawSexGrowthMap(nacionalitatData, currentYear);
 
     } else if (currentStep === "edat") {
-      drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup); // ✅ FIX
+      drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup);
 
     } else if (currentStep === "regio") {
       drawRegionGrowthMap(nacionalitatData, currentYear);
@@ -44,7 +44,7 @@ if (yearSlider && yearLabel && playBtn) {
           drawSexGrowthMap(nacionalitatData, currentYear);
 
         } else if (currentStep === "edat") {
-          drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup); // ✅ FIX
+          drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup);
 
         } else if (currentStep === "regio") {
           drawRegionGrowthMap(nacionalitatData, currentYear);
