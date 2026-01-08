@@ -21,22 +21,21 @@ Promise.all([
   educacioData = educacio;
   dimensionsData = dimensions;
   barrisGeoJSON = barris;
-  
+
   console.log("🧪 Dimensions columns:", Object.keys(dimensions[0]));
 
   dimensions.forEach(d => {
-    const dim = (d.Codi_Dimensio || "").trim();
+    const dimDesc = (d.Desc_Dimensio || "").trim();
     const code = (d.Codi_Valor || "").trim();
     const label = (d.Desc_Valor_CA || "").trim();
 
-    if (dim === "NACIONALITAT_REGIO" && code !== "") {
+    if (dimDesc === "NACIONALITAT_REGIO" && code !== "") {
       regionLabels.set(code, label);
     }
   });
 
   console.log("🟢 Regions carregades:", regionLabels.size);
   console.log("🟢 Exemple regions:", Array.from(regionLabels.entries()).slice(0, 10));
-
 
   console.log("✅ CSV + GeoJSON carregats correctament");
   console.log("Regions carregades:", regionLabels.size);
