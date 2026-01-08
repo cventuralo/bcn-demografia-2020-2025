@@ -13,7 +13,7 @@ Promise.all([
 ]).then(([edatFranges, ageCSV, nacionalitat, educacio, barris]) => {
 
   edatFrangesData = edatFranges;
-  ageData = ageCsv;
+  ageData = ageCSV;
   nacionalitatData = nacionalitat;
   educacioData = educacio;
   barrisGeoJSON = barris;
