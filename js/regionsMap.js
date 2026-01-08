@@ -3,6 +3,8 @@
 // ===============================
 let selectedRegion = null;
 let topRegions = [];
+let regionLabels = new Map(); // codi -> nom CA
+
 
 // ===============================
 // Utils
@@ -10,6 +12,24 @@ let topRegions = [];
 function getRegionLabel(code) {
   return regionLabels.get(code) || `Regió ${code}`;
 }
+
+
+// ===============================
+// Carregar labels de regions (pad_dimensions)
+// ===============================
+function loadRegionLabels(dimensionsData) {
+  regionLabels.clear();
+
+  dimensionsData.forEach(d => {
+    if (d.Codi_Dimensio === "NACIONALITAT_REGIO") {
+      regionLabels.set(d.Codi_Valor, d.Desc_Valor_CA);
+    }
+  });
+
+  console.log("🟢 Regions carregades:", regionLabels.size);
+  console.log("🟢 Exemple regions:", Array.from(regionLabels.entries()).slice(0, 5));
+}
+
 
 // ===============================
 // TOP 10 regions per creixement 2020–2025
@@ -43,6 +63,7 @@ function computeTopRegionsByGrowth(data) {
     .map(d => d.region);
 }
 
+
 // ===============================
 // Selector de regions (UI dins mapa)
 // ===============================
@@ -51,9 +72,9 @@ function drawRegionSelector(svg, width, regions) {
 
   const selectorGroup = svg.append("g")
     .attr("class", "region-selector-group")
-    .attr("transform", `translate(${width - 300}, 120)`);
+    .attr("transform", `translate(${width - 300}, 30)`); // 🔵 DALT A LA DRETA
 
-  const boxHeight = 50 + regions.length * 34;
+  const boxHeight = 50 + regions.length * 32;
 
   selectorGroup.append("rect")
     .attr("width", 280)
@@ -62,7 +83,7 @@ function drawRegionSelector(svg, width, regions) {
     .attr("ry", 12)
     .attr("fill", "white")
     .attr("stroke", "#ccc")
-    .attr("opacity", 0.96);
+    .attr("opacity", 0.97);
 
   selectorGroup.append("text")
     .attr("x", 18)
@@ -77,7 +98,7 @@ function drawRegionSelector(svg, width, regions) {
     .enter()
     .append("g")
     .attr("class", "region-option")
-    .attr("transform", (d, i) => `translate(18, ${60 + i * 32})`)
+    .attr("transform", (d, i) => `translate(18, ${60 + i * 30})`)
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       selectedRegion = d;
@@ -88,7 +109,7 @@ function drawRegionSelector(svg, width, regions) {
     .attr("x", -10)
     .attr("y", -16)
     .attr("width", 250)
-    .attr("height", 28)
+    .attr("height", 26)
     .attr("rx", 6)
     .attr("ry", 6)
     .attr("fill", d => d === selectedRegion ? "#e8efff" : "transparent");
@@ -107,6 +128,52 @@ function drawRegionSelector(svg, width, regions) {
     .style("fill", d => d === selectedRegion ? "#2563eb" : "#333")
     .style("font-weight", d => d === selectedRegion ? "bold" : "normal");
 }
+
+
+// ===============================
+// Llegenda (baix esquerra)
+// ===============================
+function drawRegionLegend(svg, height, color, maxAbs) {
+  svg.selectAll(".region-legend-group").remove();
+
+  const legendWidth = 160;
+  const legendHeight = 10;
+
+  const legendGroup = svg.append("g")
+    .attr("class", "region-legend-group")
+    .attr("transform", `translate(40, ${height - 40})`); // 🔵 BAIX ESQUERRA
+
+  const defs = svg.append("defs");
+
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient-region");
+
+  linearGradient.selectAll("stop")
+    .data([
+      { offset: "0%", color: color(-maxAbs) },
+      { offset: "50%", color: color(0) },
+      { offset: "100%", color: color(maxAbs) }
+    ])
+    .enter()
+    .append("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient-region)")
+    .attr("rx", 4)
+    .attr("ry", 4);
+
+  legendGroup.append("text")
+    .attr("x", 0)
+    .attr("y", -6)
+    .text("← Menys habitants    Més habitants →")
+    .style("font-size", "0.75rem")
+    .style("fill", "#333");
+}
+
 
 // ===============================
 // Mapa principal per REGIÓ
@@ -222,7 +289,8 @@ function drawRegionGrowthMap(data, year = currentYear) {
     .style("font-weight", "bold");
 
   // =========================
-  // Selector
+  // Selector + Llegenda
   // =========================
   drawRegionSelector(svg, width, topRegions);
+  drawRegionLegend(svg, height, color, maxAbs);
 }

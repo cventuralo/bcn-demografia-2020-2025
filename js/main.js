@@ -34,8 +34,8 @@ Promise.all([
     }
   });
 
-  console.log("🟢 Regions carregades:", regionLabels.size);
-  console.log("🟢 Exemple regions:", Array.from(regionLabels.entries()).slice(0, 10));
+  // console.log("🟢 Regions carregades:", regionLabels.size);
+  // console.log("🟢 Exemple regions:", Array.from(regionLabels.entries()).slice(0, 10));
 
   console.log("✅ CSV + GeoJSON carregats correctament");
   console.log("Regions carregades:", regionLabels.size);
