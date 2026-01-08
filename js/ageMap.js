@@ -130,22 +130,44 @@ function drawAgeGroupGrowthMap(data, year = currentYear, ageGroup = currentAgeGr
 
   const options = ["0-15", "25-44", "45-64", "65+"];
 
-  selectorGroup.selectAll("text.option")
+  const optionGroups = selectorGroup.selectAll(".age-option")
     .data(options)
     .enter()
-    .append("text")
-    .attr("class", "option")
-    .attr("x", 12)
-    .attr("y", (d, i) => 28 + i * 22)
-    .text(d => d + " anys")
-    .style("font-size", "0.9rem")
+    .append("g")
+    .attr("class", "age-option")
+    .attr("transform", (d, i) => `translate(12, ${28 + i * 24})`)
     .style("cursor", "pointer")
-    .style("fill", d => d === currentAgeGroup ? "#000" : "#666")
-    .style("font-weight", d => d === currentAgeGroup ? "bold" : "normal")
     .on("click", (event, d) => {
       currentAgeGroup = d;
       drawAgeGroupGrowthMap(data, currentYear, currentAgeGroup);
     });
+
+  // Fons highlight
+  optionGroups.append("rect")
+    .attr("x", -6)
+    .attr("y", -14)
+    .attr("width", 180)
+    .attr("height", 22)
+    .attr("rx", 4)
+    .attr("ry", 4)
+    .attr("fill", d => d === currentAgeGroup ? "#eef2ff" : "transparent");
+
+  // Punt indicador
+  optionGroups.append("circle")
+    .attr("cx", 0)
+    .attr("cy", 0)
+    .attr("r", 4)
+    .attr("fill", d => d === currentAgeGroup ? "#1f4ed8" : "#ccc");
+
+  // Text
+  optionGroups.append("text")
+    .attr("x", 10)
+    .attr("y", 4)
+    .text(d => d + " anys")
+    .style("font-size", "0.9rem")
+    .style("fill", d => d === currentAgeGroup ? "#1f4ed8" : "#444")
+    .style("font-weight", d => d === currentAgeGroup ? "bold" : "normal");
+
 
   selectorGroup.append("text")
     .attr("x", 12)

@@ -10,8 +10,12 @@ if (yearSlider && yearLabel && playBtn) {
 
     if (currentStep === "base") {
       drawPopulationGrowthMap(nacionalitatData, currentYear);
+
     } else if (currentStep === "sexe") {
       drawSexGrowthMap(nacionalitatData, currentYear);
+
+    } else if (currentStep === "edat") {
+      drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup);
     }
   });
 
@@ -20,10 +24,13 @@ if (yearSlider && yearLabel && playBtn) {
       clearInterval(playInterval);
       playInterval = null;
       playBtn.textContent = "▶️ Play";
+
     } else {
       playBtn.textContent = "⏸ Pause";
+
       playInterval = setInterval(() => {
         currentYear++;
+
         if (currentYear > 2025) currentYear = 2020;
 
         yearSlider.value = currentYear;
@@ -31,8 +38,12 @@ if (yearSlider && yearLabel && playBtn) {
 
         if (currentStep === "base") {
           drawPopulationGrowthMap(nacionalitatData, currentYear);
+
         } else if (currentStep === "sexe") {
           drawSexGrowthMap(nacionalitatData, currentYear);
+
+        } else if (currentStep === "edat") {
+          drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup);
         }
 
       }, 1200);
