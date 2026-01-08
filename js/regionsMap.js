@@ -5,6 +5,13 @@ let selectedRegion = null;
 let topRegions = [];
 
 // ===============================
+// Utils
+// ===============================
+function getRegionLabel(code) {
+  return regionLabels.get(code) || `Regió ${code}`;
+}
+
+// ===============================
 // TOP 10 regions per creixement 2020–2025
 // ===============================
 function computeTopRegionsByGrowth(data) {
@@ -44,24 +51,24 @@ function drawRegionSelector(svg, width, regions) {
 
   const selectorGroup = svg.append("g")
     .attr("class", "region-selector-group")
-    .attr("transform", `translate(${width - 260}, 120)`);
+    .attr("transform", `translate(${width - 300}, 120)`);
 
-  const boxHeight = 46 + regions.length * 30;
+  const boxHeight = 50 + regions.length * 34;
 
   selectorGroup.append("rect")
-    .attr("width", 240)
+    .attr("width", 280)
     .attr("height", boxHeight)
-    .attr("rx", 10)
-    .attr("ry", 10)
+    .attr("rx", 12)
+    .attr("ry", 12)
     .attr("fill", "white")
     .attr("stroke", "#ccc")
-    .attr("opacity", 0.95);
+    .attr("opacity", 0.96);
 
   selectorGroup.append("text")
-    .attr("x", 16)
-    .attr("y", 28)
-    .text("Regió d'origen")
-    .style("font-size", "0.9rem")
+    .attr("x", 18)
+    .attr("y", 30)
+    .text("Regió d'origen (Top 10)")
+    .style("font-size", "0.95rem")
     .style("font-weight", "bold")
     .style("fill", "#444");
 
@@ -70,7 +77,7 @@ function drawRegionSelector(svg, width, regions) {
     .enter()
     .append("g")
     .attr("class", "region-option")
-    .attr("transform", (d, i) => `translate(16, ${52 + i * 30})`)
+    .attr("transform", (d, i) => `translate(18, ${60 + i * 32})`)
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       selectedRegion = d;
@@ -79,9 +86,9 @@ function drawRegionSelector(svg, width, regions) {
 
   options.append("rect")
     .attr("x", -10)
-    .attr("y", -14)
-    .attr("width", 220)
-    .attr("height", 26)
+    .attr("y", -16)
+    .attr("width", 250)
+    .attr("height", 28)
     .attr("rx", 6)
     .attr("ry", 6)
     .attr("fill", d => d === selectedRegion ? "#e8efff" : "transparent");
@@ -95,7 +102,7 @@ function drawRegionSelector(svg, width, regions) {
   options.append("text")
     .attr("x", 14)
     .attr("y", 4)
-    .text(d => d)
+    .text(d => getRegionLabel(d))
     .style("font-size", "0.85rem")
     .style("fill", d => d === selectedRegion ? "#2563eb" : "#333")
     .style("font-weight", d => d === selectedRegion ? "bold" : "normal");
@@ -105,7 +112,7 @@ function drawRegionSelector(svg, width, regions) {
 // Mapa principal per REGIÓ
 // ===============================
 function drawRegionGrowthMap(data, year = currentYear) {
-  if (!barrisGeoJSON || !barrisGeoJSON.features) return;
+  if (!barrisGeoJSON || !barrisGeoJSON.features || !regionLabels.size) return;
 
   clearMap();
 
@@ -194,7 +201,7 @@ function drawRegionGrowthMap(data, year = currentYear) {
 
       showTooltip(
         event,
-        `<strong>${nom}</strong><br/>${selectedRegion}<br/>Canvi (2020–${year}): ${txt}`
+        `<strong>${nom}</strong><br/>${getRegionLabel(selectedRegion)}<br/>Canvi (2020–${year}): ${txt}`
       );
     })
     .on("mousemove", e => {
@@ -210,7 +217,7 @@ function drawRegionGrowthMap(data, year = currentYear) {
   svg.append("text")
     .attr("x", 20)
     .attr("y", 30)
-    .text(`Canvi de població per regió: ${selectedRegion} (2020–${year})`)
+    .text(`Canvi de població per regió: ${getRegionLabel(selectedRegion)} (2020–${year})`)
     .style("font-size", "18px")
     .style("font-weight", "bold");
 
