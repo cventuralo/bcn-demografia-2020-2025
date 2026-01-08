@@ -103,4 +103,61 @@ function drawSexGrowthMap(data, year = currentYear) {
   counterGroup.append("text").attr("x", 12).attr("y", 42).text(donesTotals.toLocaleString()).style("font-size", "1.2rem").style("fill", "#b30000");
   counterGroup.append("text").attr("x", 12).attr("y", 62).text("Total homes").style("font-size", "0.8rem");
   counterGroup.append("text").attr("x", 12).attr("y", 80).text(homesTotals.toLocaleString()).style("font-size", "1.2rem").style("fill", "#1f4ed8");
+
+  svg.selectAll(".sex-legend-group").remove();
+
+  const legendWidth = 180;
+  const legendHeight = 12;
+
+  const legendGroup = svg.append("g")
+    .attr("class", "sex-legend-group")
+    .attr("transform", `translate(${width - legendWidth - 40}, ${height - 40})`);
+
+  const defs = svg.append("defs");
+
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient-sex")
+    .attr("x1", "0%")
+    .attr("x2", "100%")
+    .attr("y1", "0%")
+    .attr("y2", "0%");
+
+  linearGradient.selectAll("stop")
+    .data([
+      { offset: "0%", color: color(-maxAbs) },   // més homes (blau)
+      { offset: "50%", color: color(0) },        // equilibri (blanc)
+      { offset: "100%", color: color(maxAbs) }   // més dones (vermell)
+    ])
+    .enter()
+    .append("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .attr("rx", 3)
+    .attr("ry", 3)
+    .style("fill", "url(#legend-gradient-sex)");
+
+  // Text Homes
+  legendGroup.append("text")
+    .attr("x", 0)
+    .attr("y", -6)
+    .attr("text-anchor", "start")
+    .text("Homes")
+    .style("font-size", "0.75rem")
+    .style("fill", "#1f4ed8")
+    .style("font-weight", "500");
+
+  // Text Dones
+  legendGroup.append("text")
+    .attr("x", legendWidth)
+    .attr("y", -6)
+    .attr("text-anchor", "end")
+    .text("Dones")
+    .style("font-size", "0.75rem")
+    .style("fill", "#b30000")
+    .style("font-weight", "500");
+
 }

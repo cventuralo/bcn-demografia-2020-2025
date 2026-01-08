@@ -114,4 +114,64 @@ function drawPopulationGrowthMap(data, year = currentYear) {
     .style("font-size", "1.4rem")
     .style("font-weight", "bold")
     .style("fill", "#111");
+
+  svg.selectAll(".population-legend-group").remove();
+
+  const legendWidth = 180;
+  const legendHeight = 12;
+
+  const legendGroup = svg.append("g")
+    .attr("class", "population-legend-group")
+    .attr("transform", `translate(${width - legendWidth - 40}, ${height - 40})`);
+
+  const defs = svg.append("defs");
+
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient-pop")
+    .attr("x1", "0%")
+    .attr("x2", "100%")
+    .attr("y1", "0%")
+    .attr("y2", "0%");
+
+  linearGradient.selectAll("stop")
+    .data([
+      { offset: "0%", color: color(0) },
+      { offset: "100%", color: color(maxVal) }
+    ])
+    .enter()
+    .append("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient-pop)")
+    .attr("rx", 3)
+    .attr("ry", 3);
+
+  // Etiquetes suaus (opcional però recomanat)
+  legendGroup.append("text")
+    .attr("x", 0)
+    .attr("y", -5)
+    .text("0")
+    .style("font-size", "0.7rem")
+    .style("fill", "#555");
+
+  legendGroup.append("text")
+    .attr("x", legendWidth)
+    .attr("y", -5)
+    .attr("text-anchor", "end")
+    .text(`+${maxVal.toLocaleString()}`)
+    .style("font-size", "0.7rem")
+    .style("fill", "#555");
+
+  legendGroup.append("text")
+    .attr("x", legendWidth / 2)
+    .attr("y", -20)
+    .attr("text-anchor", "middle")
+    .text("Increment població")
+    .style("font-size", "0.75rem")
+    .style("fill", "#444");
+
 }
