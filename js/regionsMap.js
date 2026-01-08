@@ -73,7 +73,7 @@ function computeTopRegionsByGrowth(data) {
 function drawRegionSelector(svg, width, regions) {
   svg.selectAll(".region-selector-group").remove();
 
-  const selectorWidth = 220;
+  const selectorWidth = 180;
   const rightMargin = 20;
 
   const selectorGroup = svg.append("g")
@@ -95,7 +95,7 @@ function drawRegionSelector(svg, width, regions) {
   selectorGroup.append("text")
     .attr("x", 14)
     .attr("y", 28)
-    .text("Regió d'origen (Top 10)")
+    .text("Regió d'origen")
     .style("font-size", "0.9rem")
     .style("font-weight", "bold")
     .style("fill", "#444");
