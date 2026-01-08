@@ -11,7 +11,7 @@ Promise.all([
   d3.csv("data/2020-2025_pad_mdbas_edat-1.csv"),
   d3.csv("data/2020-2025_pad_mdb_nacionalitat-regio_sexe.csv"),
   d3.csv("data/2020-2025_pad_mdb_niv-educa-esta_edat-lloc-naix.csv"),
-  d3.csv("data/pad_dimensions.csv"), // 🔵 NOU
+  d3.csv("data/pad_dimensions.csv"),
   d3.json("data/0301100100_UNITATS_ADM_POLIGONS.json")
 ]).then(([edatFranges, ageCSV, nacionalitat, educacio, dimensions, barris]) => {
 
@@ -21,6 +21,8 @@ Promise.all([
   educacioData = educacio;
   dimensionsData = dimensions;
   barrisGeoJSON = barris;
+  
+  console.log("🧪 Dimensions columns:", Object.keys(dimensions[0]));
 
   dimensions.forEach(d => {
     const dim = (d.Codi_Dimensio || "").trim();
