@@ -40,12 +40,12 @@ function updateVis(state) {
     case "sexe":
       drawSexGrowthMap(nacionalitatData, currentYear);
       break;
-    case "fluxos":
-      drawFlows(nacionalitatData);
+    case "regio":
+      drawRegionGrowthMap(nacionalitatData, currentYear);
       break;
     case "edat":
       drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup);
-      break;
+      break;  
     case "micro":
       drawCensusMicro(edatExactaData);
       break;
