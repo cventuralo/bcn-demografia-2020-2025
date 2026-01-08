@@ -73,14 +73,18 @@ function computeTopRegionsByGrowth(data) {
 function drawRegionSelector(svg, width, regions) {
   svg.selectAll(".region-selector-group").remove();
 
+  const selectorWidth = 220;
+  const rightMargin = 20;
+
   const selectorGroup = svg.append("g")
     .attr("class", "region-selector-group")
-    .attr("transform", `translate(${width - 300}, 30)`);
+    .attr("transform", `translate(${width - selectorWidth - rightMargin}, 30)`);
 
-  const boxHeight = 50 + regions.length * 30;
+  const rowHeight = 28;
+  const boxHeight = 50 + regions.length * rowHeight;
 
   selectorGroup.append("rect")
-    .attr("width", 280)
+    .attr("width", selectorWidth)
     .attr("height", boxHeight)
     .attr("rx", 12)
     .attr("ry", 12)
@@ -89,10 +93,10 @@ function drawRegionSelector(svg, width, regions) {
     .attr("opacity", 0.97);
 
   selectorGroup.append("text")
-    .attr("x", 18)
-    .attr("y", 30)
+    .attr("x", 14)
+    .attr("y", 28)
     .text("Regió d'origen (Top 10)")
-    .style("font-size", "0.95rem")
+    .style("font-size", "0.9rem")
     .style("font-weight", "bold")
     .style("fill", "#444");
 
@@ -101,7 +105,7 @@ function drawRegionSelector(svg, width, regions) {
     .enter()
     .append("g")
     .attr("class", "region-option")
-    .attr("transform", (d, i) => `translate(18, ${60 + i * 28})`)
+    .attr("transform", (d, i) => `translate(14, ${50 + i * rowHeight})`)
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       selectedRegion = d;
@@ -109,9 +113,9 @@ function drawRegionSelector(svg, width, regions) {
     });
 
   options.append("rect")
-    .attr("x", -10)
+    .attr("x", -8)
     .attr("y", -14)
-    .attr("width", 250)
+    .attr("width", selectorWidth - 20)
     .attr("height", 24)
     .attr("rx", 6)
     .attr("ry", 6)
@@ -119,19 +123,18 @@ function drawRegionSelector(svg, width, regions) {
 
   options.append("circle")
     .attr("cx", 0)
-    .attr("cy", 0)
-    .attr("r", 5)
+    .attr("cy", -2)
+    .attr("r", 4.5)
     .attr("fill", d => d === selectedRegion ? "#2563eb" : "#bbb");
 
   options.append("text")
-    .attr("x", 14)
-    .attr("y", 4)
+    .attr("x", 12)
+    .attr("y", 2)
     .text(d => getRegionLabel(d))
-    .style("font-size", "0.85rem")
+    .style("font-size", "0.82rem")
     .style("fill", d => d === selectedRegion ? "#2563eb" : "#333")
     .style("font-weight", d => d === selectedRegion ? "bold" : "normal");
 }
-
 
 // ===============================
 // Llegenda (baix esquerra)
