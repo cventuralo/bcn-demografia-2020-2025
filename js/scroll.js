@@ -35,7 +35,7 @@ function updateVis(state) {
       drawPopulationGrowthMap(nacionalitatData, currentYear);
       break;
     case "impacte":
-      drawImpactMap(nacionalitatData);
+      drawSexGrowthMap(nacionalitatData, currentYear);
       break;
     case "sexe":
       drawSexGrowthMap(nacionalitatData, currentYear);
