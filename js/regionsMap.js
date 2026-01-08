@@ -186,7 +186,7 @@ function drawRegionLegend(svg, height, color, maxAbs) {
 // ===============================
 // Comptador acumulat per regió (dreta)
 // ===============================
-function drawRegionCounter(svg, width, data, year) {
+function drawRegionCounter(svg, height, data, year) {
   svg.selectAll(".region-counter-group").remove();
 
   const data2020 = data.filter(d =>
@@ -204,13 +204,19 @@ function drawRegionCounter(svg, width, data, year) {
 
   const diff = totalYear - total2020;
 
+  // 📍 Posició: esquerra + centrat verticalment
+  const boxWidth = 200;
+  const boxHeight = 90;
+  const xPos = 30;
+  const yPos = (height / 2) - (boxHeight / 2);
+
   const counterGroup = svg.append("g")
     .attr("class", "region-counter-group")
-    .attr("transform", `translate(${width - 210}, 320)`);
+    .attr("transform", `translate(${xPos}, ${yPos})`);
 
   counterGroup.append("rect")
-    .attr("width", 180)
-    .attr("height", 90)
+    .attr("width", boxWidth)
+    .attr("height", boxHeight)
     .attr("rx", 12)
     .attr("ry", 12)
     .attr("fill", "white")
@@ -218,29 +224,28 @@ function drawRegionCounter(svg, width, data, year) {
     .attr("opacity", 0.97);
 
   counterGroup.append("text")
-    .attr("x", 12)
-    .attr("y", 24)
+    .attr("x", 14)
+    .attr("y", 26)
     .text(getRegionLabel(selectedRegion))
-    .style("font-size", "0.9rem")
+    .style("font-size", "0.95rem")
     .style("font-weight", "bold")
     .style("fill", "#333");
 
   counterGroup.append("text")
-    .attr("x", 12)
-    .attr("y", 42)
+    .attr("x", 14)
+    .attr("y", 44)
     .text(`2020 – ${year}`)
     .style("font-size", "0.75rem")
     .style("fill", "#666");
 
   counterGroup.append("text")
-    .attr("x", 12)
-    .attr("y", 68)
+    .attr("x", 14)
+    .attr("y", 72)
     .text(`${diff >= 0 ? "+" : ""}${diff.toLocaleString()} habitants`)
-    .style("font-size", "1.2rem")
+    .style("font-size", "1.3rem")
     .style("font-weight", "bold")
     .style("fill", diff >= 0 ? "#2563eb" : "#b91c1c");
 }
-
 
 // ===============================
 // Mapa principal per REGIÓ
@@ -335,5 +340,5 @@ function drawRegionGrowthMap(data, year = currentYear) {
 
   drawRegionSelector(svg, width, topRegions);
   drawRegionLegend(svg, height, color, maxAbs);
-  drawRegionCounter(svg, width, data, year);
+  drawRegionCounter(svg, height, data, year);
 }
