@@ -173,7 +173,7 @@ function drawPopulationIncrementCounter(svg, height, year, total2020, totalYear)
     .attr("x", 16)
     .attr("y", 78)
     .text(`${increment >= 0 ? "+" : ""}${increment.toLocaleString()} habitants`)
-    .style("font-size", "1.4rem")
+    .style("font-size", "1.3rem")
     .style("font-weight", "bold")
     .style("fill", increment >= 0 ? "#2563eb" : "#b91c1c");
 }
