@@ -121,7 +121,7 @@ function drawAgeGroupGrowthMap(data, year = currentYear, ageGroup = currentAgeGr
 
   selectorGroup.append("rect")
     .attr("width", 200)
-    .attr("height", 120)
+    .attr("height", 150)
     .attr("rx", 8)
     .attr("ry", 8)
     .attr("fill", "white")
