@@ -1,0 +1,42 @@
+const yearSlider = document.getElementById("year-slider");
+const yearLabel = document.getElementById("year-label");
+const playBtn = document.getElementById("play-btn");
+
+if (yearSlider && yearLabel && playBtn) {
+
+  yearSlider.addEventListener("input", e => {
+    currentYear = +e.target.value;
+    yearLabel.textContent = currentYear;
+
+    if (currentStep === "base") {
+      drawPopulationGrowthMap(nacionalitatData, currentYear);
+    } else if (currentStep === "sexe") {
+      drawSexGrowthMap(nacionalitatData, currentYear);
+    }
+  });
+
+  playBtn.addEventListener("click", () => {
+    if (playInterval) {
+      clearInterval(playInterval);
+      playInterval = null;
+      playBtn.textContent = "▶️ Play";
+    } else {
+      playBtn.textContent = "⏸ Pause";
+      playInterval = setInterval(() => {
+        currentYear++;
+        if (currentYear > 2025) currentYear = 2020;
+
+        yearSlider.value = currentYear;
+        yearLabel.textContent = currentYear;
+
+        if (currentStep === "base") {
+          drawPopulationGrowthMap(nacionalitatData, currentYear);
+        } else if (currentStep === "sexe") {
+          drawSexGrowthMap(nacionalitatData, currentYear);
+        }
+
+      }, 1200);
+    }
+  });
+
+}
