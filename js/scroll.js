@@ -44,7 +44,7 @@ function updateVis(state) {
       drawFlows(nacionalitatData);
       break;
     case "edat":
-      drawAgeStructure(edatFrangesData);
+      drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup);
       break;
     case "micro":
       drawCensusMicro(edatExactaData);
