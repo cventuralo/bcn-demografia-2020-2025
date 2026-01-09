@@ -48,7 +48,7 @@ function wrapText(textSelection, maxWidth) {
 function drawEducationSelector(svg, width, educations) {
   svg.selectAll(".education-selector-group").remove();
 
-  const selectorWidth = 270;
+  const selectorWidth = 250;
   const rightMargin = 30;
   const topMargin = 60;
 
@@ -106,7 +106,7 @@ function drawEducationSelector(svg, width, educations) {
   const optionText = options.append("text")
     .attr("x", 14)
     .attr("y", 4)
-    .text(d => getEducationLabel(d))
+    .text(d => getEducationShortLabel(d))
     .style("font-size", "0.78rem")
     .style("fill", d => d === selectedEducation ? "#2563eb" : "#333")
     .style("font-weight", d => d === selectedEducation ? "bold" : "normal");
@@ -190,7 +190,7 @@ function drawEducationCounter(svg, height, data, year) {
   const titleText = counterGroup.append("text")
     .attr("x", 18)
     .attr("y", 28)
-    .text(getEducationLabel(selectedEducation))
+    .text(getEducationShortLabel(selectedEducation))
     .style("font-size", "0.9rem")
     .style("font-weight", "bold")
     .style("fill", "#333");
@@ -271,7 +271,7 @@ function drawEducationMap(data, year = currentYear) {
       showTooltip(
         event,
         `<strong>${nom}</strong><br/>
-         ${getEducationLabel(selectedEducation)}<br/>
+         ${getEducationShortLabel(selectedEducation)}<br/>
          ${year}: ${valor.toLocaleString()} persones`
       );
     })

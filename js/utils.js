@@ -85,3 +85,22 @@ function loadEducationLabels(dimensionsData) {
 
   console.log("🟢 Educació carregada:", educationLabels.size);
 }
+
+function getEducationShortLabel(code) {
+  switch (code) {
+    case "1":
+      return "Sense estudis";
+    case "2":
+      return "Primària";
+    case "3":
+      return "ESO / FPI";
+    case "4":
+      return "Batxillerat / CFGM";
+    case "5":
+      return "Universitaris / CFGS";
+    case "6":
+      return "No consta";
+    default:
+      return code;
+  }
+}
