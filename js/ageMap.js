@@ -115,7 +115,7 @@ function drawAgeGroupSelector(svg, width, data, year) {
     .attr("class", "age-selector-group")
     .attr("transform", `translate(${width - selectorWidth - rightMargin}, ${topMargin})`);
 
-  const options = ["0-15", "25-44", "45-64", "65+"];
+  const options = ["0-15", "16-24", "25-44", "45-64", "65+"];
   const rowHeight = 32;
   const boxHeight = 50 + options.length * rowHeight;
 
