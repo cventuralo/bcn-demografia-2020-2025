@@ -101,25 +101,32 @@ function drawAgeGroupTitle(svg, ageGroup, year) {
 }
 
 
-// =========================
-// SELECTOR FRANJA EDAT
-// =========================
-
+// ===============================
+// Selector franja d’edat (dalt dreta)
+// ===============================
 function drawAgeGroupSelector(svg, width, data, year) {
   svg.selectAll(".age-selector-group").remove();
 
+  const selectorWidth = 200;
+  const rightMargin = 20;
+  const topMargin = 30;
+
   const selectorGroup = svg.append("g")
     .attr("class", "age-selector-group")
-    .attr("transform", `translate(${width - 220}, 60)`);
+    .attr("transform", `translate(${width - selectorWidth - rightMargin}, ${topMargin})`);
+
+  const options = ["0-15", "25-44", "45-64", "65+"];
+  const rowHeight = 32;
+  const boxHeight = 50 + options.length * rowHeight;
 
   selectorGroup.append("rect")
-    .attr("width", 200)
-    .attr("height", 170)
-    .attr("rx", 10)
-    .attr("ry", 10)
+    .attr("width", selectorWidth)
+    .attr("height", boxHeight)
+    .attr("rx", 12)
+    .attr("ry", 12)
     .attr("fill", "white")
-    .attr("opacity", 0.95)
-    .attr("stroke", "#ccc");
+    .attr("stroke", "#ccc")
+    .attr("opacity", 0.97);
 
   selectorGroup.append("text")
     .attr("x", 16)
@@ -129,14 +136,12 @@ function drawAgeGroupSelector(svg, width, data, year) {
     .style("font-weight", "bold")
     .style("fill", "#444");
 
-  const options = ["0-15", "25-44", "45-64", "65+"];
-
   const optionGroups = selectorGroup.selectAll(".age-option")
     .data(options)
     .enter()
     .append("g")
     .attr("class", "age-option")
-    .attr("transform", (d, i) => `translate(16, ${56 + i * 32})`)
+    .attr("transform", (d, i) => `translate(16, ${50 + i * rowHeight})`)
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       currentAgeGroup = d;
@@ -146,7 +151,7 @@ function drawAgeGroupSelector(svg, width, data, year) {
   optionGroups.append("rect")
     .attr("x", -8)
     .attr("y", -16)
-    .attr("width", 180)
+    .attr("width", selectorWidth - 32)
     .attr("height", 26)
     .attr("rx", 6)
     .attr("ry", 6)
@@ -155,18 +160,17 @@ function drawAgeGroupSelector(svg, width, data, year) {
   optionGroups.append("circle")
     .attr("cx", 0)
     .attr("cy", -2)
-    .attr("r", 4)
+    .attr("r", 4.5)
     .attr("fill", d => d === currentAgeGroup ? "#1f4ed8" : "#ccc");
 
   optionGroups.append("text")
-    .attr("x", 10)
-    .attr("y", 4)
+    .attr("x", 12)
+    .attr("y", 2)
     .text(d => d + " anys")
-    .style("font-size", "0.9rem")
-    .style("fill", d => d === currentAgeGroup ? "#1f4ed8" : "#444")
+    .style("font-size", "0.85rem")
+    .style("fill", d => d === currentAgeGroup ? "#1f4ed8" : "#333")
     .style("font-weight", d => d === currentAgeGroup ? "bold" : "normal");
 }
-
 
 // =========================
 // COMPTADOR FRANJA (MIG ESQUERRA)
