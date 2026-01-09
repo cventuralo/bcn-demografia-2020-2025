@@ -48,11 +48,11 @@ function wrapText(textSelection, maxWidth) {
 function drawEducationSelector(svg, width, educations) {
   svg.selectAll(".education-selector-group").remove();
 
-  const selectorWidth = 250;
-  const rightMargin = 30;
-  const topMargin = 60;
+  const selectorWidth = 190;
+  const rightMargin = 20;
+  const topMargin = 30;
 
-  const rowHeight = 36;
+  const rowHeight = 32;
   const boxHeight = 50 + educations.length * rowHeight;
 
   const selectorGroup = svg.append("g")
@@ -62,8 +62,8 @@ function drawEducationSelector(svg, width, educations) {
   selectorGroup.append("rect")
     .attr("width", selectorWidth)
     .attr("height", boxHeight)
-    .attr("rx", 14)
-    .attr("ry", 14)
+    .attr("rx", 12)
+    .attr("ry", 12)
     .attr("fill", "white")
     .attr("stroke", "#ccc")
     .attr("opacity", 0.97);
@@ -90,22 +90,22 @@ function drawEducationSelector(svg, width, educations) {
 
   options.append("rect")
     .attr("x", -8)
-    .attr("y", -14)
-    .attr("width", selectorWidth - 36)
-    .attr("height", 28)
-    .attr("rx", 8)
-    .attr("ry", 8)
+    .attr("y", -16)
+    .attr("width", selectorWidth - 32)
+    .attr("height", 26)
+    .attr("rx", 6)
+    .attr("ry", 6)
     .attr("fill", d => d === selectedEducation ? "#e8efff" : "transparent");
 
   options.append("circle")
     .attr("cx", 0)
-    .attr("cy", 0)
+    .attr("cy", -2)
     .attr("r", 4.5)
     .attr("fill", d => d === selectedEducation ? "#2563eb" : "#bbb");
 
   const optionText = options.append("text")
-    .attr("x", 14)
-    .attr("y", 4)
+    .attr("x", 12)
+    .attr("y", 2)
     .text(d => getEducationShortLabel(d))
     .style("font-size", "0.78rem")
     .style("fill", d => d === selectedEducation ? "#2563eb" : "#333")
@@ -169,9 +169,9 @@ function drawEducationCounter(svg, height, data, year) {
 
   const totalYear = d3.sum(dataYear, d => +d.Valor);
 
-  const boxWidth = 280;
-  const boxHeight = 120;
-  const xPos = 40;
+  const boxWidth = 200;
+  const boxHeight = 90;
+  const xPos = 30;
   const yPos = (height / 2) - (boxHeight / 2);
 
   const counterGroup = svg.append("g")
@@ -181,32 +181,32 @@ function drawEducationCounter(svg, height, data, year) {
   counterGroup.append("rect")
     .attr("width", boxWidth)
     .attr("height", boxHeight)
-    .attr("rx", 16)
-    .attr("ry", 16)
+    .attr("rx", 14)
+    .attr("ry", 14)
     .attr("fill", "white")
     .attr("stroke", "#ccc")
     .attr("opacity", 0.97);
 
   const titleText = counterGroup.append("text")
-    .attr("x", 18)
+    .attr("x", 16)
     .attr("y", 28)
     .text(getEducationShortLabel(selectedEducation))
-    .style("font-size", "0.9rem")
+    .style("font-size", "0.95rem")
     .style("font-weight", "bold")
     .style("fill", "#333");
 
   titleText.call(wrapText, boxWidth - 36);
 
   counterGroup.append("text")
-    .attr("x", 18)
-    .attr("y", 60)
+    .attr("x", 16)
+    .attr("y", 48)
     .text(`${year}`)
-    .style("font-size", "0.75rem")
+    .style("font-size", "0.8rem")
     .style("fill", "#666");
 
   counterGroup.append("text")
-    .attr("x", 18)
-    .attr("y", 96)
+    .attr("x", 16)
+    .attr("y", 78)
     .text(`${totalYear.toLocaleString()} persones`)
     .style("font-size", "1.45rem")
     .style("font-weight", "bold")
