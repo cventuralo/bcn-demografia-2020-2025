@@ -62,7 +62,7 @@ if (yearSlider && yearLabel && playBtn) {
         } else if (currentStep === "preu") {
           drawPriceVariationMap(priceData, currentYear);
         } 
-      }, 1200);
+      }, 1500);
     }
   });
 

@@ -115,7 +115,7 @@ function drawTotalPriceCounter(svg, width, totalYear) {
     .attr("transform", `translate(${width - 260}, 20)`);
 
   group.append("rect")
-    .attr("width", 240)
+    .attr("width", 200)
     .attr("height", 70)
     .attr("rx", 12)
     .attr("ry", 12)
@@ -127,7 +127,8 @@ function drawTotalPriceCounter(svg, width, totalYear) {
     .attr("x", 14)
     .attr("y", 26)
     .text("Preu mig BCN")
-    .style("font-size", "0.8rem")
+    .style("font-size", "0.9rem")
+    .style("font-weight", "bold")
     .style("fill", "#666");
 
   group.append("text")
@@ -149,8 +150,8 @@ function drawPriceVariationCounter(svg, height, year, total2020, totalYear) {
 
   const pct = total2020 > 0 ? ((totalYear - total2020) / total2020) * 100 : 0;
 
-  const boxWidth = 240;
-  const boxHeight = 100;
+  const boxWidth = 200;
+  const boxHeight = 90;
   const xPos = 30;
   const yPos = (height / 2) - (boxHeight / 2);
 
