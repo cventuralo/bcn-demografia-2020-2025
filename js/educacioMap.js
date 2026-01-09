@@ -3,45 +3,6 @@
 // ===============================
 let selectedEducation = null;
 
-
-// ===============================
-// Utils: wrap text en diverses línies (amb bon interlineat)
-// ===============================
-function wrapText(textSelection, maxWidth) {
-  textSelection.each(function () {
-    const text = d3.select(this);
-    const words = text.text().split(/\s+/).reverse();
-    let word;
-    let line = [];
-    let lineNumber = 0;
-    const lineHeight = 1.25; // ems
-    const y = text.attr("y");
-    const dy = 0;
-
-    let tspan = text.text(null)
-      .append("tspan")
-      .attr("x", text.attr("x"))
-      .attr("y", y)
-      .attr("dy", dy + "em");
-
-    while (word = words.pop()) {
-      line.push(word);
-      tspan.text(line.join(" "));
-      if (tspan.node().getComputedTextLength() > maxWidth) {
-        line.pop();
-        tspan.text(line.join(" "));
-        line = [word];
-        tspan = text.append("tspan")
-          .attr("x", text.attr("x"))
-          .attr("y", y)
-          .attr("dy", ++lineNumber * lineHeight + dy + "em")
-          .text(word);
-      }
-    }
-  });
-}
-
-
 // ===============================
 // Selector de nivells educatius (DALT DRETA)
 // ===============================
@@ -111,7 +72,6 @@ function drawEducationSelector(svg, width, educations) {
     .style("fill", d => d === selectedEducation ? "#2563eb" : "#333")
     .style("font-weight", d => d === selectedEducation ? "bold" : "normal");
 
-  optionText.call(wrapText, selectorWidth - 70);
 }
 
 
@@ -194,8 +154,6 @@ function drawEducationCounter(svg, height, data, year) {
     .style("font-size", "0.95rem")
     .style("font-weight", "bold")
     .style("fill", "#333");
-
-  titleText.call(wrapText, boxWidth - 36);
 
   counterGroup.append("text")
     .attr("x", 16)
