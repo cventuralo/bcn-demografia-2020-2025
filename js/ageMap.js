@@ -107,7 +107,7 @@ function drawAgeGroupTitle(svg, ageGroup, year) {
 function drawAgeGroupSelector(svg, width, data, year) {
   svg.selectAll(".age-selector-group").remove();
 
-  const selectorWidth = 200;
+  const selectorWidth = 190;
   const rightMargin = 20;
   const topMargin = 30;
 
