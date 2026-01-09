@@ -185,7 +185,7 @@ function drawEducationCounter(svg, width, height, data, year) {
 // Mapa principal EDUCACIÓ (VALOR ABSOLUT)
 // ===============================
 function drawEducationMap(data, year = currentYear) {
-  if (!barrisGeoனர்JSON || !barrisGeoJSON.features || !educationLabels.size) return;
+  if (!barrisGeoJSON || !barrisGeoJSON.features || !educationLabels.size) return;
 
   clearMap();
 
