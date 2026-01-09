@@ -150,8 +150,8 @@ function drawPriceVariationCounter(svg, height, year, total2020, totalYear) {
 
   const pct = total2020 > 0 ? ((totalYear - total2020) / total2020) * 100 : 0;
 
-  const boxWidth = 200;
-  const boxHeight = 90;
+  const boxWidth = 170;
+  const boxHeight = 100;
   const xPos = 30;
   const yPos = (height / 2) - (boxHeight / 2);
 
