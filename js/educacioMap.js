@@ -169,7 +169,7 @@ function drawEducationCounter(svg, height, data, year) {
 
   const totalYear = d3.sum(dataYear, d => +d.Valor);
 
-  const boxWidth = 210;
+  const boxWidth = 200;
   const boxHeight = 90;
   const xPos = 30;
   const yPos = (height / 2) - (boxHeight / 2);
@@ -208,7 +208,7 @@ function drawEducationCounter(svg, height, data, year) {
     .attr("x", 16)
     .attr("y", 78)
     .text(`${totalYear.toLocaleString()} persones`)
-    .style("font-size", "1.45rem")
+    .style("font-size", "1.3rem")
     .style("font-weight", "bold")
     .style("fill", "#2563eb");
 }
