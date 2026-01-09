@@ -2,30 +2,10 @@
 // Estat
 // ===============================
 let selectedEducation = null;
-// let educationLabels = new Map(); // codi -> label
-let topEducations = [];
 
 
 // ===============================
-// TOP nivells per volum total (2025)
-// ===============================
-function computeTopEducations(data) {
-  const data2025 = data.filter(d => d.Data_Referencia.startsWith("2025"));
-
-  const sumByEdu = d3.rollup(
-    data2025,
-    v => d3.sum(v, d => +d.Valor),
-    d => d.NIV_EDUCA_esta
-  );
-
-  return Array.from(sumByEdu.entries())
-    .sort((a, b) => b[1] - a[1])
-    .map(d => d[0]);
-}
-
-
-// ===============================
-// Selector de nivells educatius (UI dins mapa)
+// Selector de nivells educatius
 // ===============================
 function drawEducationSelector(svg, width, educations) {
   svg.selectAll(".education-selector-group").remove();
@@ -66,7 +46,7 @@ function drawEducationSelector(svg, width, educations) {
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       selectedEducation = d;
-      drawEducationGrowthMap(educacioData, currentYear);
+      drawEducationMap(educacioData, currentYear);
     });
 
   options.append("rect")
@@ -95,9 +75,9 @@ function drawEducationSelector(svg, width, educations) {
 
 
 // ===============================
-// Llegenda (baix esquerra)
+// Llegenda seqüencial
 // ===============================
-function drawEducationLegend(svg, height, color, maxAbs) {
+function drawEducationLegend(svg, height, color, max) {
   svg.selectAll(".education-legend-group").remove();
 
   const legendWidth = 160;
@@ -113,15 +93,11 @@ function drawEducationLegend(svg, height, color, maxAbs) {
     .attr("id", "legend-gradient-education");
 
   linearGradient.selectAll("stop")
-    .data([
-      { offset: "0%", color: color(-maxAbs) },
-      { offset: "50%", color: color(0) },
-      { offset: "100%", color: color(maxAbs) }
-    ])
+    .data(d3.range(0, 1.01, 0.1))
     .enter()
     .append("stop")
-    .attr("offset", d => d.offset)
-    .attr("stop-color", d => d.color);
+    .attr("offset", d => `${d * 100}%`)
+    .attr("stop-color", d => color(d * max));
 
   legendGroup.append("rect")
     .attr("width", legendWidth)
@@ -133,35 +109,27 @@ function drawEducationLegend(svg, height, color, maxAbs) {
   legendGroup.append("text")
     .attr("x", 0)
     .attr("y", -6)
-    .text("← Menys població    Més població →")
+    .text("Menys població → Més població")
     .style("font-size", "0.75rem")
     .style("fill", "#333");
 }
 
 
 // ===============================
-// Comptador acumulat (esquerra)
+// Counter total ciutat
 // ===============================
 function drawEducationCounter(svg, height, data, year) {
   svg.selectAll(".education-counter-group").remove();
-
-  const data2020 = data.filter(d =>
-    d.Data_Referencia.startsWith("2020") &&
-    d.NIV_EDUCA_esta === selectedEducation
-  );
 
   const dataYear = data.filter(d =>
     d.Data_Referencia.startsWith(year.toString()) &&
     d.NIV_EDUCA_esta === selectedEducation
   );
 
-  const total2020 = d3.sum(data2020, d => +d.Valor);
   const totalYear = d3.sum(dataYear, d => +d.Valor);
 
-  const diff = totalYear - total2020;
-
   const boxWidth = 240;
-  const boxHeight = 100;
+  const boxHeight = 90;
   const xPos = 30;
   const yPos = (height / 2) - (boxHeight / 2);
 
@@ -188,25 +156,25 @@ function drawEducationCounter(svg, height, data, year) {
 
   counterGroup.append("text")
     .attr("x", 14)
-    .attr("y", 44)
-    .text(`2020 – ${year}`)
+    .attr("y", 46)
+    .text(`${year}`)
     .style("font-size", "0.75rem")
     .style("fill", "#666");
 
   counterGroup.append("text")
     .attr("x", 14)
-    .attr("y", 76)
-    .text(`${diff >= 0 ? "+" : ""}${diff.toLocaleString()} persones`)
+    .attr("y", 74)
+    .text(`${totalYear.toLocaleString()} persones`)
     .style("font-size", "1.4rem")
     .style("font-weight", "bold")
-    .style("fill", diff >= 0 ? "#2563eb" : "#b91c1c");
+    .style("fill", "#2563eb");
 }
 
 
 // ===============================
-// Mapa principal per EDUCACIÓ
+// Mapa principal EDUCACIÓ (VALOR ABSOLUT)
 // ===============================
-function drawEducationGrowthMap(data, year = currentYear) {
+function drawEducationMap(data, year = currentYear) {
   if (!barrisGeoJSON || !barrisGeoJSON.features || !educationLabels.size) return;
 
   clearMap();
@@ -223,63 +191,48 @@ function drawEducationGrowthMap(data, year = currentYear) {
 
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
-  if (topEducations.length === 0) {
-    topEducations = computeTopEducations(data);
-    selectedEducation = topEducations[0];
+  // 👉 inicialitzar nivell educatiu si cal
+  if (!selectedEducation) {
+    selectedEducation = Array.from(educationLabels.keys())[0];
   }
 
-  const data2020 = data.filter(d =>
-    d.Data_Referencia.startsWith("2020") &&
-    d.NIV_EDUCA_esta === selectedEducation
-  );
-
+  // dades filtrades per any + nivell educatiu
   const dataYear = data.filter(d =>
     d.Data_Referencia.startsWith(year.toString()) &&
     d.NIV_EDUCA_esta === selectedEducation
   );
 
-  const sumByBarri = (dataset) => d3.rollup(
-    dataset,
+  const sumByBarri = d3.rollup(
+    dataYear,
     v => d3.sum(v, d => +d.Valor),
     d => normalitzaNom(d.Nom_Barri)
   );
 
-  const map2020 = sumByBarri(data2020);
-  const mapYear = sumByBarri(dataYear);
+  const values = Array.from(sumByBarri.values());
+  const max = d3.max(values) || 1;
 
-  const diffPerBarri = new Map();
+  const color = d3.scaleSequential()
+    .domain([0, max])
+    .interpolator(d3.interpolateBlues);
 
-  barris.forEach(b => {
-    const nom = normalitzaNom(b.properties.NOM);
-    const v2020 = map2020.get(nom) || 0;
-    const vYear = mapYear.get(nom) || 0;
-    diffPerBarri.set(nom, vYear - v2020);
-  });
-
-  const values = Array.from(diffPerBarri.values());
-  const maxAbs = d3.max(values.map(v => Math.abs(v))) || 1;
-
-  const color = d3.scaleDiverging()
-    .domain([-maxAbs, 0, maxAbs])
-    .interpolator(d3.interpolateRdBu);
-
+  // dibuixar barris
   svg.selectAll("path")
     .data(barris)
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("fill", d => color(diffPerBarri.get(normalitzaNom(d.properties.NOM)) || 0))
+    .attr("fill", d => color(sumByBarri.get(normalitzaNom(d.properties.NOM)) || 0))
     .attr("stroke", "#333")
     .attr("stroke-width", 0.5)
     .on("mouseover", function (event, d) {
       const nom = d.properties.NOM;
-      const valor = diffPerBarri.get(normalitzaNom(nom)) || 0;
+      const valor = sumByBarri.get(normalitzaNom(nom)) || 0;
 
       showTooltip(
         event,
         `<strong>${nom}</strong><br/>
          ${getEducationLabel(selectedEducation)}<br/>
-         Canvi (2020–${year}): ${valor >= 0 ? "+" : ""}${valor.toLocaleString()}`
+         ${year}: ${valor.toLocaleString()} persones`
       );
     })
     .on("mousemove", e => {
@@ -289,14 +242,17 @@ function drawEducationGrowthMap(data, year = currentYear) {
     })
     .on("mouseout", hideTooltip);
 
+  // títol
   svg.append("text")
     .attr("x", 20)
     .attr("y", 30)
-    .text(`Canvi de població per nivell educatiu (2020–${year})`)
+    .text(`Població per nivell educatiu (${year})`)
     .style("font-size", "18px")
     .style("font-weight", "bold");
 
-  drawEducationSelector(svg, width, topEducations);
-  drawEducationLegend(svg, height, color, maxAbs);
+  const allEducations = Array.from(educationLabels.keys());
+
+  drawEducationSelector(svg, width, allEducations);
+  drawEducationLegend(svg, height, color, max);
   drawEducationCounter(svg, height, data, year);
 }
