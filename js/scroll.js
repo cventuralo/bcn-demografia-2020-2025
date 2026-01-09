@@ -46,8 +46,8 @@ function updateVis(state) {
     case "edat":
       drawAgeGroupGrowthMap(ageData, currentYear, currentAgeGroup);
       break;  
-    case "micro":
-      drawCensusMicro(nacionalitatData);
+    case "preu":
+      drawPriceVariationMap(priceData, currentYear);
       break;
     case "educacio":
       drawEducationMap(educacioData, currentYear);

@@ -22,7 +22,10 @@ if (yearSlider && yearLabel && playBtn) {
 
     } else if (currentStep === "educacio") {
       drawEducationMap(educacioData, currentYear);
-    }
+
+    } else if (currentStep === "educacio") {
+      drawPriceVariationMap(priceData, currentYear);
+    } 
     
   });
 
@@ -55,7 +58,10 @@ if (yearSlider && yearLabel && playBtn) {
 
         } else if (currentStep === "educacio") {
           drawEducationMap(educacioData, currentYear);
-        }
+
+        } else if (currentStep === "educacio") {
+          drawPriceVariationMap(priceData, currentYear);
+        } 
       }, 1200);
     }
   });
