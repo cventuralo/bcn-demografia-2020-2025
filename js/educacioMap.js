@@ -5,20 +5,24 @@ let selectedEducation = null;
 
 
 // ===============================
-// Selector de nivells educatius
+// Selector de nivells educatius (BAIX ESQUERRA)
 // ===============================
-function drawEducationSelector(svg, width, educations) {
+function drawEducationSelector(svg, width, height, educations) {
   svg.selectAll(".education-selector-group").remove();
 
   const selectorWidth = 240;
-  const rightMargin = 20;
-
-  const selectorGroup = svg.append("g")
-    .attr("class", "education-selector-group")
-    .attr("transform", `translate(${width - selectorWidth - rightMargin}, 60)`);
+  const leftMargin = 30;
+  const bottomMargin = 30;
 
   const rowHeight = 24;
   const boxHeight = 46 + educations.length * rowHeight;
+
+  const selectorGroup = svg.append("g")
+    .attr("class", "education-selector-group")
+    .attr(
+      "transform",
+      `translate(${leftMargin}, ${height - boxHeight - bottomMargin})`
+    );
 
   selectorGroup.append("rect")
     .attr("width", selectorWidth)
@@ -75,7 +79,7 @@ function drawEducationSelector(svg, width, educations) {
 
 
 // ===============================
-// Llegenda seqüencial (discreta)
+// Llegenda seqüencial (a sobre del selector)
 // ===============================
 function drawEducationLegend(svg, height, color, max) {
   svg.selectAll(".education-legend-group").remove();
@@ -83,9 +87,12 @@ function drawEducationLegend(svg, height, color, max) {
   const legendWidth = 120;
   const legendHeight = 8;
 
+  const leftMargin = 30;
+  const bottomMargin = 30;
+
   const legendGroup = svg.append("g")
     .attr("class", "education-legend-group")
-    .attr("transform", `translate(30, ${height - 30})`);
+    .attr("transform", `translate(${leftMargin}, ${height - bottomMargin - 10})`);
 
   const defs = svg.append("defs");
 
@@ -116,9 +123,9 @@ function drawEducationLegend(svg, height, color, max) {
 
 
 // ===============================
-// Counter total ciutat (dalt esquerra)
+// Counter total ciutat (BAIX DRETA)
 // ===============================
-function drawEducationCounter(svg, height, data, year) {
+function drawEducationCounter(svg, width, height, data, year) {
   svg.selectAll(".education-counter-group").remove();
 
   const dataYear = data.filter(d =>
@@ -130,8 +137,11 @@ function drawEducationCounter(svg, height, data, year) {
 
   const boxWidth = 240;
   const boxHeight = 90;
-  const xPos = 30;
-  const yPos = 70;
+  const rightMargin = 30;
+  const bottomMargin = 30;
+
+  const xPos = width - boxWidth - rightMargin;
+  const yPos = height - boxHeight - bottomMargin;
 
   const counterGroup = svg.append("g")
     .attr("class", "education-counter-group")
@@ -175,7 +185,7 @@ function drawEducationCounter(svg, height, data, year) {
 // Mapa principal EDUCACIÓ (VALOR ABSOLUT)
 // ===============================
 function drawEducationMap(data, year = currentYear) {
-  if (!barrisGeoJSON || !barrisGeoJSON.features || !educationLabels.size) return;
+  if (!barrisGeoனர்JSON || !barrisGeoJSON.features || !educationLabels.size) return;
 
   clearMap();
 
@@ -252,7 +262,7 @@ function drawEducationMap(data, year = currentYear) {
 
   const allEducations = Array.from(educationLabels.keys());
 
-  drawEducationSelector(svg, width, allEducations);
+  drawEducationSelector(svg, width, height, allEducations);
   drawEducationLegend(svg, height, color, max);
-  drawEducationCounter(svg, height, data, year);
+  drawEducationCounter(svg, width, height, data, year);
 }
