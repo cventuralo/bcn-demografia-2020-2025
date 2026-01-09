@@ -62,3 +62,26 @@ function getAgeGroup(age) {
 
   return null;
 }
+
+// Utils educacioMap.js
+function getEducationLabel(code) {
+  return educationLabels.get(code) || `Nivell ${code}`;
+}
+
+let educationLabels = new Map();
+
+function loadEducationLabels(dimensionsData) {
+  educationLabels.clear();
+
+  dimensionsData.forEach(d => {
+    const dimDesc = (d.Desc_Dimensio || "").trim();
+    const code = (d.Codi_Valor || "").trim();
+    const label = (d.Desc_Valor_CA || "").trim();
+
+    if (dimDesc === "NIV_EDUCA_esta" && code !== "") {
+      educationLabels.set(code, label);
+    }
+  });
+
+  console.log("🟢 Educació carregada:", educationLabels.size);
+}

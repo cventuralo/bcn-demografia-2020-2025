@@ -23,6 +23,8 @@ Promise.all([
 
   // 🔵 carregar labels de regions (FUNCIO A regionMap.js)
   loadRegionLabels(dimensionsData);
+  // carregar labels de educacio
+  loadEducationLabels(dimensionsData);
 
   console.log("✅ CSV + GeoJSON carregats correctament");
   console.log("🟢 Regions carregades:", regionLabels.size);
