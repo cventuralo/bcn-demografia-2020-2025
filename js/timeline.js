@@ -21,7 +21,7 @@ if (yearSlider && yearLabel && playBtn) {
       drawRegionGrowthMap(nacionalitatData, currentYear);
 
     } else if (currentStep === "educacio") {
-      drawEducationGrowthMap(educacioData, currentYear);
+      drawEducationMap(educacioData, currentYear);
     }
     
   });
@@ -54,7 +54,7 @@ if (yearSlider && yearLabel && playBtn) {
           drawRegionGrowthMap(nacionalitatData, currentYear);
 
         } else if (currentStep === "educacio") {
-          drawEducationGrowthMap(educacioData, currentYear);
+          drawEducationMap(educacioData, currentYear);
         }
       }, 1200);
     }
