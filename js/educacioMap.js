@@ -135,9 +135,9 @@ function drawEducationCounter(svg, width, height, data, year) {
 
   const totalYear = d3.sum(dataYear, d => +d.Valor);
 
-  const boxWidth = 300;
+  const boxWidth = 350;
   const boxHeight = 90;
-  const rightMargin = 90;
+  const rightMargin = 70;
   const bottomMargin = 30;
 
   const xPos = width - boxWidth - rightMargin;
