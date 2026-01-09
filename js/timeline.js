@@ -19,7 +19,11 @@ if (yearSlider && yearLabel && playBtn) {
 
     } else if (currentStep === "regio") {
       drawRegionGrowthMap(nacionalitatData, currentYear);
+
+    } else if (currentStep === "educacio") {
+      drawEducationGrowthMap(educacioData, currentYear);
     }
+    
   });
 
   playBtn.addEventListener("click", () => {
@@ -48,8 +52,10 @@ if (yearSlider && yearLabel && playBtn) {
 
         } else if (currentStep === "regio") {
           drawRegionGrowthMap(nacionalitatData, currentYear);
-        }
 
+        } else if (currentStep === "educacio") {
+          drawEducationGrowthMap(educacioData, currentYear);
+        }
       }, 1200);
     }
   });
