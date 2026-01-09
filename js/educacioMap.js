@@ -5,24 +5,54 @@ let selectedEducation = null;
 
 
 // ===============================
-// Selector de nivells educatius (BAIX ESQUERRA)
+// Utils: wrap text en diverses línies
 // ===============================
-function drawEducationSelector(svg, width, height, educations) {
+function wrapText(textSelection, maxWidth) {
+  textSelection.each(function () {
+    const text = d3.select(this);
+    const words = text.text().split(/\s+/).reverse();
+    let word;
+    let line = [];
+    let lineNumber = 0;
+    const lineHeight = 1.1; // ems
+    const y = text.attr("y");
+    const dy = 0;
+    let tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > maxWidth) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan")
+          .attr("x", 0)
+          .attr("y", y)
+          .attr("dy", ++lineNumber * lineHeight + dy + "em")
+          .text(word);
+      }
+    }
+  });
+}
+
+
+// ===============================
+// Selector de nivells educatius (DALT DRETA)
+// ===============================
+function drawEducationSelector(svg, width, educations) {
   svg.selectAll(".education-selector-group").remove();
 
-  const selectorWidth = 240;
-  const leftMargin = 30;
-  const bottomMargin = 30;
+  const selectorWidth = 260;
+  const rightMargin = 20;
+  const topMargin = 60;
 
-  const rowHeight = 24;
+  const rowHeight = 32;
   const boxHeight = 46 + educations.length * rowHeight;
 
   const selectorGroup = svg.append("g")
     .attr("class", "education-selector-group")
-    .attr(
-      "transform",
-      `translate(${leftMargin}, ${height - boxHeight - bottomMargin})`
-    );
+    .attr("transform", `translate(${width - selectorWidth - rightMargin}, ${topMargin})`);
 
   selectorGroup.append("rect")
     .attr("width", selectorWidth)
@@ -37,7 +67,7 @@ function drawEducationSelector(svg, width, height, educations) {
     .attr("x", 14)
     .attr("y", 24)
     .text("Nivell educatiu")
-    .style("font-size", "0.85rem")
+    .style("font-size", "0.9rem")
     .style("font-weight", "bold")
     .style("fill", "#444");
 
@@ -55,9 +85,9 @@ function drawEducationSelector(svg, width, height, educations) {
 
   options.append("rect")
     .attr("x", -8)
-    .attr("y", -12)
+    .attr("y", -14)
     .attr("width", selectorWidth - 20)
-    .attr("height", 20)
+    .attr("height", 28)
     .attr("rx", 6)
     .attr("ry", 6)
     .attr("fill", d => d === selectedEducation ? "#e8efff" : "transparent");
@@ -65,7 +95,7 @@ function drawEducationSelector(svg, width, height, educations) {
   options.append("circle")
     .attr("cx", 0)
     .attr("cy", -2)
-    .attr("r", 4)
+    .attr("r", 4.5)
     .attr("fill", d => d === selectedEducation ? "#2563eb" : "#bbb");
 
   options.append("text")
@@ -74,12 +104,13 @@ function drawEducationSelector(svg, width, height, educations) {
     .text(d => getEducationLabel(d))
     .style("font-size", "0.75rem")
     .style("fill", d => d === selectedEducation ? "#2563eb" : "#333")
-    .style("font-weight", d => d === selectedEducation ? "bold" : "normal");
+    .style("font-weight", d => d === selectedEducation ? "bold" : "normal")
+    .call(wrapText, selectorWidth - 60);
 }
 
 
 // ===============================
-// Llegenda seqüencial (a sobre del selector)
+// Llegenda seqüencial (BAIX ESQUERRA)
 // ===============================
 function drawEducationLegend(svg, height, color, max) {
   svg.selectAll(".education-legend-group").remove();
@@ -87,12 +118,9 @@ function drawEducationLegend(svg, height, color, max) {
   const legendWidth = 120;
   const legendHeight = 8;
 
-  const leftMargin = 30;
-  const bottomMargin = 30;
-
   const legendGroup = svg.append("g")
     .attr("class", "education-legend-group")
-    .attr("transform", `translate(${leftMargin}, ${height - bottomMargin - 10})`);
+    .attr("transform", `translate(30, ${height - 30})`);
 
   const defs = svg.append("defs");
 
@@ -123,9 +151,9 @@ function drawEducationLegend(svg, height, color, max) {
 
 
 // ===============================
-// Counter total ciutat (BAIX DRETA)
+// Counter total ciutat (CENTRE ESQUERRA)
 // ===============================
-function drawEducationCounter(svg, width, height, data, year) {
+function drawEducationCounter(svg, height, data, year) {
   svg.selectAll(".education-counter-group").remove();
 
   const dataYear = data.filter(d =>
@@ -135,13 +163,10 @@ function drawEducationCounter(svg, width, height, data, year) {
 
   const totalYear = d3.sum(dataYear, d => +d.Valor);
 
-  const boxWidth = 360;
-  const boxHeight = 90;
-  const rightMargin = 20;
-  const bottomMargin = 30;
-
-  const xPos = width - boxWidth - rightMargin;
-  const yPos = height - boxHeight - bottomMargin;
+  const boxWidth = 260;
+  const boxHeight = 110;
+  const xPos = 30;
+  const yPos = (height / 2) - (boxHeight / 2);
 
   const counterGroup = svg.append("g")
     .attr("class", "education-counter-group")
@@ -150,13 +175,13 @@ function drawEducationCounter(svg, width, height, data, year) {
   counterGroup.append("rect")
     .attr("width", boxWidth)
     .attr("height", boxHeight)
-    .attr("rx", 12)
-    .attr("ry", 12)
+    .attr("rx", 14)
+    .attr("ry", 14)
     .attr("fill", "white")
     .attr("stroke", "#ccc")
     .attr("opacity", 0.97);
 
-  counterGroup.append("text")
+  const titleText = counterGroup.append("text")
     .attr("x", 14)
     .attr("y", 26)
     .text(getEducationLabel(selectedEducation))
@@ -164,18 +189,20 @@ function drawEducationCounter(svg, width, height, data, year) {
     .style("font-weight", "bold")
     .style("fill", "#333");
 
+  titleText.call(wrapText, boxWidth - 28);
+
   counterGroup.append("text")
     .attr("x", 14)
-    .attr("y", 44)
+    .attr("y", 54)
     .text(`${year}`)
     .style("font-size", "0.75rem")
     .style("fill", "#666");
 
   counterGroup.append("text")
     .attr("x", 14)
-    .attr("y", 72)
+    .attr("y", 88)
     .text(`${totalYear.toLocaleString()} persones`)
-    .style("font-size", "1.35rem")
+    .style("font-size", "1.4rem")
     .style("font-weight", "bold")
     .style("fill", "#2563eb");
 }
@@ -201,12 +228,10 @@ function drawEducationMap(data, year = currentYear) {
 
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
-  // inicialitzar nivell educatiu si cal
   if (!selectedEducation) {
     selectedEducation = Array.from(educationLabels.keys())[0];
   }
 
-  // dades filtrades per any + nivell educatiu
   const dataYear = data.filter(d =>
     d.Data_Referencia.startsWith(year.toString()) &&
     d.NIV_EDUCA_esta === selectedEducation
@@ -225,7 +250,6 @@ function drawEducationMap(data, year = currentYear) {
     .domain([0, max])
     .interpolator(d3.interpolateBlues);
 
-  // dibuixar barris
   svg.selectAll("path")
     .data(barris)
     .enter()
@@ -252,7 +276,6 @@ function drawEducationMap(data, year = currentYear) {
     })
     .on("mouseout", hideTooltip);
 
-  // títol
   svg.append("text")
     .attr("x", 30)
     .attr("y", 32)
@@ -262,7 +285,7 @@ function drawEducationMap(data, year = currentYear) {
 
   const allEducations = Array.from(educationLabels.keys());
 
-  drawEducationSelector(svg, width, height, allEducations);
+  drawEducationSelector(svg, width, allEducations);
   drawEducationLegend(svg, height, color, max);
-  drawEducationCounter(svg, width, height, data, year);
+  drawEducationCounter(svg, height, data, year);
 }
