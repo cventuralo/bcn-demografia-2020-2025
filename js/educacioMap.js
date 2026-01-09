@@ -81,7 +81,7 @@ function drawEducationSelector(svg, width, educations) {
     .enter()
     .append("g")
     .attr("class", "education-option")
-    .attr("transform", (d, i) => `translate(18, ${44 + i * rowHeight})`)
+    .attr("transform", (d, i) => `translate(16, ${50 + i * rowHeight})`)
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       selectedEducation = d;
@@ -107,7 +107,7 @@ function drawEducationSelector(svg, width, educations) {
     .attr("x", 12)
     .attr("y", 2)
     .text(d => getEducationShortLabel(d))
-    .style("font-size", "0.78rem")
+    .style("font-size", "0.85rem")
     .style("fill", d => d === selectedEducation ? "#2563eb" : "#333")
     .style("font-weight", d => d === selectedEducation ? "bold" : "normal");
 
@@ -169,7 +169,7 @@ function drawEducationCounter(svg, height, data, year) {
 
   const totalYear = d3.sum(dataYear, d => +d.Valor);
 
-  const boxWidth = 200;
+  const boxWidth = 210;
   const boxHeight = 90;
   const xPos = 30;
   const yPos = (height / 2) - (boxHeight / 2);
