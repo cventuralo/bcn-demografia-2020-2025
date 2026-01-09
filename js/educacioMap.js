@@ -10,15 +10,15 @@ let selectedEducation = null;
 function drawEducationSelector(svg, width, educations) {
   svg.selectAll(".education-selector-group").remove();
 
-  const selectorWidth = 260;
+  const selectorWidth = 240;
   const rightMargin = 20;
 
   const selectorGroup = svg.append("g")
     .attr("class", "education-selector-group")
-    .attr("transform", `translate(${width - selectorWidth - rightMargin}, 30)`);
+    .attr("transform", `translate(${width - selectorWidth - rightMargin}, 60)`);
 
-  const rowHeight = 28;
-  const boxHeight = 50 + educations.length * rowHeight;
+  const rowHeight = 24;
+  const boxHeight = 46 + educations.length * rowHeight;
 
   selectorGroup.append("rect")
     .attr("width", selectorWidth)
@@ -31,9 +31,9 @@ function drawEducationSelector(svg, width, educations) {
 
   selectorGroup.append("text")
     .attr("x", 14)
-    .attr("y", 28)
+    .attr("y", 24)
     .text("Nivell educatiu")
-    .style("font-size", "0.9rem")
+    .style("font-size", "0.85rem")
     .style("font-weight", "bold")
     .style("fill", "#444");
 
@@ -42,7 +42,7 @@ function drawEducationSelector(svg, width, educations) {
     .enter()
     .append("g")
     .attr("class", "education-option")
-    .attr("transform", (d, i) => `translate(14, ${50 + i * rowHeight})`)
+    .attr("transform", (d, i) => `translate(14, ${40 + i * rowHeight})`)
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       selectedEducation = d;
@@ -51,9 +51,9 @@ function drawEducationSelector(svg, width, educations) {
 
   options.append("rect")
     .attr("x", -8)
-    .attr("y", -14)
+    .attr("y", -12)
     .attr("width", selectorWidth - 20)
-    .attr("height", 24)
+    .attr("height", 20)
     .attr("rx", 6)
     .attr("ry", 6)
     .attr("fill", d => d === selectedEducation ? "#e8efff" : "transparent");
@@ -61,31 +61,31 @@ function drawEducationSelector(svg, width, educations) {
   options.append("circle")
     .attr("cx", 0)
     .attr("cy", -2)
-    .attr("r", 4.5)
+    .attr("r", 4)
     .attr("fill", d => d === selectedEducation ? "#2563eb" : "#bbb");
 
   options.append("text")
     .attr("x", 12)
     .attr("y", 2)
     .text(d => getEducationLabel(d))
-    .style("font-size", "0.78rem")
+    .style("font-size", "0.75rem")
     .style("fill", d => d === selectedEducation ? "#2563eb" : "#333")
     .style("font-weight", d => d === selectedEducation ? "bold" : "normal");
 }
 
 
 // ===============================
-// Llegenda seqüencial
+// Llegenda seqüencial (discreta)
 // ===============================
 function drawEducationLegend(svg, height, color, max) {
   svg.selectAll(".education-legend-group").remove();
 
-  const legendWidth = 160;
-  const legendHeight = 10;
+  const legendWidth = 120;
+  const legendHeight = 8;
 
   const legendGroup = svg.append("g")
     .attr("class", "education-legend-group")
-    .attr("transform", `translate(40, ${height - 40})`);
+    .attr("transform", `translate(30, ${height - 30})`);
 
   const defs = svg.append("defs");
 
@@ -109,14 +109,14 @@ function drawEducationLegend(svg, height, color, max) {
   legendGroup.append("text")
     .attr("x", 0)
     .attr("y", -6)
-    .text("Menys població → Més població")
-    .style("font-size", "0.75rem")
+    .text("Menys → Més")
+    .style("font-size", "0.7rem")
     .style("fill", "#333");
 }
 
 
 // ===============================
-// Counter total ciutat
+// Counter total ciutat (dalt esquerra)
 // ===============================
 function drawEducationCounter(svg, height, data, year) {
   svg.selectAll(".education-counter-group").remove();
@@ -131,7 +131,7 @@ function drawEducationCounter(svg, height, data, year) {
   const boxWidth = 240;
   const boxHeight = 90;
   const xPos = 30;
-  const yPos = (height / 2) - (boxHeight / 2);
+  const yPos = 70;
 
   const counterGroup = svg.append("g")
     .attr("class", "education-counter-group")
@@ -150,22 +150,22 @@ function drawEducationCounter(svg, height, data, year) {
     .attr("x", 14)
     .attr("y", 26)
     .text(getEducationLabel(selectedEducation))
-    .style("font-size", "0.9rem")
+    .style("font-size", "0.85rem")
     .style("font-weight", "bold")
     .style("fill", "#333");
 
   counterGroup.append("text")
     .attr("x", 14)
-    .attr("y", 46)
+    .attr("y", 44)
     .text(`${year}`)
     .style("font-size", "0.75rem")
     .style("fill", "#666");
 
   counterGroup.append("text")
     .attr("x", 14)
-    .attr("y", 74)
+    .attr("y", 72)
     .text(`${totalYear.toLocaleString()} persones`)
-    .style("font-size", "1.4rem")
+    .style("font-size", "1.35rem")
     .style("font-weight", "bold")
     .style("fill", "#2563eb");
 }
@@ -191,7 +191,7 @@ function drawEducationMap(data, year = currentYear) {
 
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
-  // 👉 inicialitzar nivell educatiu si cal
+  // inicialitzar nivell educatiu si cal
   if (!selectedEducation) {
     selectedEducation = Array.from(educationLabels.keys())[0];
   }
@@ -244,8 +244,8 @@ function drawEducationMap(data, year = currentYear) {
 
   // títol
   svg.append("text")
-    .attr("x", 20)
-    .attr("y", 30)
+    .attr("x", 30)
+    .attr("y", 32)
     .text(`Població per nivell educatiu (${year})`)
     .style("font-size", "18px")
     .style("font-weight", "bold");
