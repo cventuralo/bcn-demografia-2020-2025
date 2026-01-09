@@ -50,7 +50,7 @@ function updateVis(state) {
       drawCensusMicro(nacionalitatData);
       break;
     case "educacio":
-      drawEducationGrowthMap(educacioData, currentYear);
+      drawEducationMap(educacioData, currentYear);
       break;
     case "conclusio":
       clearMap();
