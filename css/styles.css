@@ -7,23 +7,26 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.5;
   color: #222;
+  background: #ffffff;
 }
 
 /* ===================== */
 /* HEADER */
 /* ===================== */
 header {
-  padding: 30px 40px 10px 40px;
+  padding: 40px 40px 20px 40px;
 }
 
 h1 {
   margin: 0;
-  font-size: 2.2rem;
+  font-size: 2.4rem;
 }
 
 .subtitle {
   color: #555;
-  max-width: 800px;
+  max-width: 900px;
+  margin-top: 10px;
+  line-height: 1.6;
 }
 
 /* ===================== */
@@ -34,6 +37,7 @@ h1 {
   align-items: flex-start;
   gap: 40px;
   padding: 20px 40px;
+  flex-wrap: wrap; /* 🔥 important per tallar bé abans de la conclusió */
 }
 
 /* Columna narrativa */
@@ -64,6 +68,8 @@ h1 {
 
 .step h2 {
   margin-top: 0;
+  font-size: 1.6rem;
+  margin-bottom: 10px;
 }
 
 /* ===================== */
@@ -110,8 +116,10 @@ h1 {
   pointer-events: none;
 }
 
-/* Conclusions*/
- 
+/* ===================== */
+/* CONCLUSIÓ FINAL */
+/* ===================== */
+
 #final {
   min-height: 100vh;
   width: 100%;
@@ -121,6 +129,9 @@ h1 {
   align-items: center;
   justify-content: center;
   padding: 10vh 10vw;
+  position: relative;
+  clear: both;        /* 🔥 força tall del layout */
+  z-index: 10;
 }
 
 .final-content {
@@ -130,16 +141,45 @@ h1 {
 #final h2 {
   font-size: 3rem;
   margin-bottom: 2rem;
+  line-height: 1.2;
 }
 
 #final p {
   font-size: 1.2rem;
-  line-height: 1.6;
+  line-height: 1.7;
   margin-bottom: 1.5rem;
+  color: #eaeaea;
 }
 
 #final .closing {
   font-size: 1.4rem;
   font-weight: 500;
   margin-top: 3rem;
+  color: #ffffff;
+}
+
+/* ===================== */
+/* RESPONSIVE */
+/* ===================== */
+@media (max-width: 900px) {
+  #container {
+    flex-direction: column;
+  }
+
+  #graphic {
+    position: relative;
+    top: auto;
+  }
+
+  #text {
+    max-width: 100%;
+  }
+
+  #final h2 {
+    font-size: 2.2rem;
+  }
+
+  #final p {
+    font-size: 1.05rem;
+  }
 }
