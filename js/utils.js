@@ -1,6 +1,4 @@
-// ======================
-// Utils
-// ======================
+// Normalitzo els noms dels barris per facilitar comparacions
 function normalitzaNom(nom) {
   return nom
     .toLowerCase()
@@ -10,15 +8,13 @@ function normalitzaNom(nom) {
     .trim();
 }
 
-// ======================
-// Estat temporal global
-// ======================
+// Defineixo l’any actual de la visualització
 let currentYear = 2020;
+
+// Defineixo l’interval per a la reproducció automàtica
 let playInterval = null;
 
-// ======================
-// Tooltip
-// ======================
+// Creo el contenidor del tooltip
 const tooltip = d3.select("body")
   .append("div")
   .attr("class", "tooltip")
@@ -30,6 +26,7 @@ const tooltip = d3.select("body")
   .style("pointer-events", "none")
   .style("opacity", 0);
 
+// Mostro el tooltip amb el contingut indicat
 function showTooltip(event, html) {
   tooltip
     .html(html)
@@ -40,17 +37,20 @@ function showTooltip(event, html) {
     .style("opacity", 1);
 }
 
+// Amago el tooltip
 function hideTooltip() {
-  tooltip.transition().duration(150).style("opacity", 0);
+  tooltip
+    .transition()
+    .duration(150)
+    .style("opacity", 0);
 }
 
-// ======================
-// Clear mapa
-// ======================
+// Esborro tot el contingut del mapa
 function clearMap() {
   d3.select("#map").selectAll("*").remove();
 }
 
+// Assigno una franja d’edat a partir d’un valor numèric
 function getAgeGroup(age) {
   age = +age;
 
@@ -63,13 +63,10 @@ function getAgeGroup(age) {
   return null;
 }
 
-// Utils educacioMap.js
-function getEducationLabel(code) {
-  return educationLabels.get(code) || `Nivell ${code}`;
-}
-
+// Emmagatzemo els labels de nivell educatiu
 let educationLabels = new Map();
 
+// Carrego els labels d’educació a partir de les dimensions
 function loadEducationLabels(dimensionsData) {
   educationLabels.clear();
 
@@ -83,9 +80,15 @@ function loadEducationLabels(dimensionsData) {
     }
   });
 
-  console.log("🟢 Educació carregada:", educationLabels.size);
+  console.log("Labels d’educació carregats:", educationLabels.size);
 }
 
+// Retorno el label complet del nivell educatiu
+function getEducationLabel(code) {
+  return educationLabels.get(code) || `Nivell ${code}`;
+}
+
+// Retorno un label abreujat del nivell educatiu
 function getEducationShortLabel(code) {
   switch (code) {
     case "1":

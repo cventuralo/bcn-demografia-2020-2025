@@ -1,19 +1,12 @@
-// =========================================
-// AGE GROUP GROWTH MAP – BCN
-// Increment població per franges d'edat
-// =========================================
-
+// Defineixo la franja d’edat activa per defecte
 let currentAgeGroup = "0-15";
 
-
-// =========================
-// CÀLCULS
-// =========================
-
+// Filtro les dades segons la franja d’edat seleccionada
 function filterDataByAgeGroup(data, ageGroup) {
   return data.filter(d => getAgeGroup(d.EDAT_1) === ageGroup);
 }
 
+// Calculo els mapes per a 2020 i per a l’any seleccionat segons la franja
 function computeAgeGroupMaps(data, year, ageGroup) {
   const data2020 = data.filter(d => d.Data_Referencia.startsWith("2020"));
   const dataYear = data.filter(d => d.Data_Referencia.startsWith(year.toString()));
@@ -35,6 +28,7 @@ function computeAgeGroupMaps(data, year, ageGroup) {
   };
 }
 
+// Calculo la diferència per barri entre 2020 i l’any seleccionat
 function computeAgeGroupDiffPerBarri(barris, map2020, mapYear) {
   const diffPerBarri = new Map();
 
@@ -48,11 +42,7 @@ function computeAgeGroupDiffPerBarri(barris, map2020, mapYear) {
   return diffPerBarri;
 }
 
-
-// =========================
-// DIBUIX MAPA
-// =========================
-
+// Dibuixo els polígons del mapa amb la variació per franja d’edat
 function drawAgeGroupMap(svg, barris, path, diffPerBarri, color, ageGroup, year) {
   svg.selectAll("path")
     .data(barris)
@@ -86,11 +76,7 @@ function drawAgeGroupMap(svg, barris, path, diffPerBarri, color, ageGroup, year)
     .on("mouseout", hideTooltip);
 }
 
-
-// =========================
-// TÍTOL
-// =========================
-
+// Afegeixo el títol del mapa segons la franja i l’any
 function drawAgeGroupTitle(svg, ageGroup, year) {
   svg.append("text")
     .attr("x", 20)
@@ -100,10 +86,7 @@ function drawAgeGroupTitle(svg, ageGroup, year) {
     .style("font-weight", "bold");
 }
 
-
-// ===============================
-// Selector franja d’edat (dalt dreta)
-// ===============================
+// Dibuixo el selector de franja d’edat a la part superior dreta
 function drawAgeGroupSelector(svg, width, data, year) {
   svg.selectAll(".age-selector-group").remove();
 
@@ -172,10 +155,7 @@ function drawAgeGroupSelector(svg, width, data, year) {
     .style("font-weight", d => d === currentAgeGroup ? "bold" : "normal");
 }
 
-// =========================
-// COMPTADOR FRANJA (MIG ESQUERRA)
-// =========================
-
+// Mostro el comptador de variació total de la franja al centre esquerre
 function drawAgeGroupCounter(svg, height, ageGroup, year, total2020, totalYear) {
   svg.selectAll(".age-counter-group").remove();
 
@@ -223,11 +203,7 @@ function drawAgeGroupCounter(svg, height, ageGroup, year, total2020, totalYear) 
     .style("fill", diff >= 0 ? "#2563eb" : "#b91c1c");
 }
 
-
-// =========================
-// LLEGENDA
-// =========================
-
+// Dibuixo la llegenda de la variació
 function drawAgeGroupLegend(svg, width, height, color, maxAbs) {
   svg.selectAll(".age-legend-group").remove();
 
@@ -266,7 +242,7 @@ function drawAgeGroupLegend(svg, width, height, color, maxAbs) {
   legendGroup.append("text")
     .attr("x", 0)
     .attr("y", -6)
-    .text("↓ Disminució")
+    .text("Disminució")
     .style("font-size", "0.7rem")
     .style("fill", "#555");
 
@@ -274,19 +250,16 @@ function drawAgeGroupLegend(svg, width, height, color, maxAbs) {
     .attr("x", legendWidth)
     .attr("y", -6)
     .attr("text-anchor", "end")
-    .text("↑ Increment")
+    .text("Increment")
     .style("font-size", "0.7rem")
     .style("fill", "#555");
 }
 
-
-// =========================
-// FUNCIÓ PRINCIPAL
-// =========================
-
+// Dibuix del mapa de franges d’edat
 function drawAgeGroupGrowthMap(data, year = currentYear, ageGroup = currentAgeGroup) {
+
   if (!barrisGeoJSON || !barrisGeoJSON.features) {
-    console.warn("⏳ barrisGeoJSON encara no carregat");
+    console.warn("barrisGeoJSON encara no està carregat");
     return;
   }
 
@@ -306,7 +279,6 @@ function drawAgeGroupGrowthMap(data, year = currentYear, ageGroup = currentAgeGr
     d => d.properties.TIPUS_UA === "BARRI"
   );
 
-  // Càlculs
   const { map2020, mapYear, total2020, totalYear } =
     computeAgeGroupMaps(data, year, ageGroup);
 
@@ -320,7 +292,6 @@ function drawAgeGroupGrowthMap(data, year = currentYear, ageGroup = currentAgeGr
     .domain([-maxAbs, 0, maxAbs])
     .interpolator(d3.interpolateRdBu);
 
-  // Dibuix
   drawAgeGroupMap(svg, barris, path, diffPerBarri, color, ageGroup, year);
   drawAgeGroupTitle(svg, ageGroup, year);
   drawAgeGroupSelector(svg, width, data, year);

@@ -1,13 +1,4 @@
-// =========================================
-// PRICE VARIATION MAP – BCN
-// Variació % preu mig m2 per barri + totals BCN
-// =========================================
-
-
-// =========================
-// CÀLCULS
-// =========================
-
+// Calculo els mapes de preu per a 2020 i per a l’any seleccionat
 function computePriceMaps(data, year) {
   const yearKey = year.toString();
   const baseYearKey = "2020";
@@ -33,7 +24,7 @@ function computePriceMaps(data, year) {
   return { map2020, mapYear, total2020, totalYear };
 }
 
-
+// Calculo la variació percentual per barri respecte a 2020
 function computePriceDiffPerBarri(barris, map2020, mapYear) {
   const diffPerBarri = new Map();
 
@@ -53,11 +44,7 @@ function computePriceDiffPerBarri(barris, map2020, mapYear) {
   return diffPerBarri;
 }
 
-
-// =========================
-// DIBUIX MAPA
-// =========================
-
+// Dibuixo els polígons del mapa amb la variació de preu
 function drawPriceMap(svg, barris, path, diffPerBarri, color, year) {
   svg.selectAll("path")
     .data(barris)
@@ -88,11 +75,7 @@ function drawPriceMap(svg, barris, path, diffPerBarri, color, year) {
     .on("mouseout", hideTooltip);
 }
 
-
-// =========================
-// TÍTOL
-// =========================
-
+// Afegeixo el títol del mapa de preus
 function drawPriceTitle(svg, year) {
   svg.append("text")
     .attr("x", 20)
@@ -102,11 +85,7 @@ function drawPriceTitle(svg, year) {
     .style("font-weight", "bold");
 }
 
-
-// =========================
-// COMPTADOR TOTAL BCN (DALT DRETA)
-// =========================
-
+// Mostro el preu mitjà de Barcelona a la part superior dreta
 function drawTotalPriceCounter(svg, width, totalYear) {
   svg.selectAll(".price-counter-group").remove();
 
@@ -140,11 +119,7 @@ function drawTotalPriceCounter(svg, width, totalYear) {
     .style("fill", "#111");
 }
 
-
-// =========================
-// COMPTADOR VARIACIÓ BCN (ESQUERRA CENTRAT)
-// =========================
-
+// Mostro la variació percentual de Barcelona al centre esquerre
 function drawPriceVariationCounter(svg, height, year, total2020, totalYear) {
   svg.selectAll(".price-variation-counter-group").remove();
 
@@ -192,11 +167,7 @@ function drawPriceVariationCounter(svg, height, year, total2020, totalYear) {
     .style("fill", pct >= 0 ? "#2563eb" : "#b91c1c");
 }
 
-
-// =========================
-// LLEGENDA
-// =========================
-
+// Dibuixo la llegenda de la variació de preus
 function drawPriceLegend(svg, width, height, color, maxAbs) {
   svg.selectAll(".price-legend-group").remove();
 
@@ -256,14 +227,11 @@ function drawPriceLegend(svg, width, height, color, maxAbs) {
     .style("fill", "#444");
 }
 
-
-// =========================
-// FUNCIÓ PRINCIPAL
-// =========================
-
+// Dibuix complet del mapa de variació de preu
 function drawPriceVariationMap(data, year = currentYear) {
+
   if (!barrisGeoJSON || !barrisGeoJSON.features) {
-    console.warn("⏳ barrisGeoJSON encara no carregat");
+    console.warn("barrisGeoJSON encara no està carregat");
     return;
   }
 
@@ -283,7 +251,6 @@ function drawPriceVariationMap(data, year = currentYear) {
     d => d.properties.TIPUS_UA === "BARRI"
   );
 
-  // Càlculs
   const { map2020, mapYear, total2020, totalYear } = computePriceMaps(data, year);
   const diffPerBarri = computePriceDiffPerBarri(barris, map2020, mapYear);
 
@@ -294,7 +261,6 @@ function drawPriceVariationMap(data, year = currentYear) {
     .domain([-maxAbs, 0, maxAbs])
     .interpolator(d3.interpolateRdBu);
 
-  // Dibuix
   drawPriceMap(svg, barris, path, diffPerBarri, color, year);
   drawPriceTitle(svg, year);
   drawTotalPriceCounter(svg, width, totalYear);

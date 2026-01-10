@@ -1,11 +1,7 @@
-// ===============================
-// Estat
-// ===============================
+// Emmagatzemo el nivell educatiu seleccionat
 let selectedEducation = null;
 
-// ===============================
-// Selector de nivells educatius (DALT DRETA)
-// ===============================
+// Dibuixo el selector de nivells educatius dins del mapa
 function drawEducationSelector(svg, width, educations) {
   svg.selectAll(".education-selector-group").remove();
 
@@ -64,20 +60,16 @@ function drawEducationSelector(svg, width, educations) {
     .attr("r", 4.5)
     .attr("fill", d => d === selectedEducation ? "#2563eb" : "#bbb");
 
-  const optionText = options.append("text")
+  options.append("text")
     .attr("x", 12)
     .attr("y", 2)
     .text(d => getEducationShortLabel(d))
     .style("font-size", "0.85rem")
     .style("fill", d => d === selectedEducation ? "#2563eb" : "#333")
     .style("font-weight", d => d === selectedEducation ? "bold" : "normal");
-
 }
 
-
-// ===============================
-// Llegenda seqüencial (BAIX ESQUERRA)
-// ===============================
+// Dibuixo la llegenda seqüencial de nivells educatius
 function drawEducationLegend(svg, height, color, max) {
   svg.selectAll(".education-legend-group").remove();
 
@@ -115,10 +107,7 @@ function drawEducationLegend(svg, height, color, max) {
     .style("fill", "#333");
 }
 
-
-// ===============================
-// Counter total ciutat (CENTRE ESQUERRA)
-// ===============================
+// Mostro el comptador total de població per nivell educatiu
 function drawEducationCounter(svg, height, data, year) {
   svg.selectAll(".education-counter-group").remove();
 
@@ -147,7 +136,7 @@ function drawEducationCounter(svg, height, data, year) {
     .attr("stroke", "#ccc")
     .attr("opacity", 0.97);
 
-  const titleText = counterGroup.append("text")
+  counterGroup.append("text")
     .attr("x", 16)
     .attr("y", 28)
     .text(getEducationShortLabel(selectedEducation))
@@ -171,12 +160,12 @@ function drawEducationCounter(svg, height, data, year) {
     .style("fill", "#2563eb");
 }
 
-
-// ===============================
-// Mapa principal EDUCACIÓ (VALOR ABSOLUT)
-// ===============================
+// dibuix del mapa de nivell educatiu
 function drawEducationMap(data, year = currentYear) {
-  if (!barrisGeoJSON || !barrisGeoJSON.features || !educationLabels.size) return;
+
+  if (!barrisGeoJSON || !barrisGeoJSON.features || !educationLabels.size) {
+    return;
+  }
 
   clearMap();
 

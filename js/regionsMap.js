@@ -1,22 +1,18 @@
-// ===============================
-// Estat
-// ===============================
+// Emmagatzemo l’estat de la regió seleccionada
 let selectedRegion = null;
+
+// Guardo el llistat de regions amb més creixement
 let topRegions = [];
-let regionLabels = new Map(); // codi -> nom CA
 
+// Emmagatzemo els labels de regions (codi -> nom en català)
+let regionLabels = new Map();
 
-// ===============================
-// Utils
-// ===============================
+// Retorno el nom de la regió a partir del codi
 function getRegionLabel(code) {
   return regionLabels.get(code) || `Regió ${code}`;
 }
 
-
-// ===============================
-// Carregar labels de regions (pad_dimensions)
-// ===============================
+// Carrego els labels de regions a partir de les dimensions
 function loadRegionLabels(dimensionsData) {
   regionLabels.clear();
 
@@ -29,15 +25,9 @@ function loadRegionLabels(dimensionsData) {
       regionLabels.set(code, label);
     }
   });
-
-  console.log("🟢 Regions carregades:", regionLabels.size);
-  console.log("🟢 Exemple regions:", Array.from(regionLabels.entries()).slice(0, 5));
 }
 
-
-// ===============================
-// TOP 10 regions per creixement 2020–2025
-// ===============================
+// Calculo les 10 regions amb més creixement entre 2020 i 2025
 function computeTopRegionsByGrowth(data) {
   const data2020 = data.filter(d => d.Data_Referencia.startsWith("2020"));
   const data2025 = data.filter(d => d.Data_Referencia.startsWith("2025"));
@@ -67,10 +57,7 @@ function computeTopRegionsByGrowth(data) {
     .map(d => d.region);
 }
 
-
-// ===============================
-// Selector de regions (UI dins mapa)
-// ===============================
+// Dibuixo el selector de regions dins del mapa
 function drawRegionSelector(svg, width, regions) {
   svg.selectAll(".region-selector-group").remove();
 
@@ -137,10 +124,7 @@ function drawRegionSelector(svg, width, regions) {
     .style("font-weight", d => d === selectedRegion ? "bold" : "normal");
 }
 
-
-// ===============================
-// Llegenda (baix esquerra)
-// ===============================
+// Dibuixo la llegenda de variació per regió
 function drawRegionLegend(svg, height, color, maxAbs) {
   svg.selectAll(".region-legend-group").remove();
 
@@ -177,15 +161,12 @@ function drawRegionLegend(svg, height, color, maxAbs) {
   legendGroup.append("text")
     .attr("x", 0)
     .attr("y", -6)
-    .text("← Menys habitants    Més habitants →")
+    .text("Menys habitants     Més habitants")
     .style("font-size", "0.75rem")
     .style("fill", "#333");
 }
 
-
-// ===============================
-// Comptador acumulat per regió (dreta)
-// ===============================
+// Mostro el comptador acumulat per regió seleccionada
 function drawRegionCounter(svg, height, data, year) {
   svg.selectAll(".region-counter-group").remove();
 
@@ -204,7 +185,6 @@ function drawRegionCounter(svg, height, data, year) {
 
   const diff = totalYear - total2020;
 
-  // 📍 Posició: esquerra + centrat verticalment
   const boxWidth = 200;
   const boxHeight = 90;
   const xPos = 30;
@@ -247,11 +227,12 @@ function drawRegionCounter(svg, height, data, year) {
     .style("fill", diff >= 0 ? "#2563eb" : "#b91c1c");
 }
 
-// ===============================
-// Mapa principal per REGIÓ
-// ===============================
+// Dibuix del mapa de creixement per regió
 function drawRegionGrowthMap(data, year = currentYear) {
-  if (!barrisGeoJSON || !barrisGeoJSON.features || !regionLabels.size) return;
+
+  if (!barrisGeoJSON || !barrisGeoJSON.features || !regionLabels.size) {
+    return;
+  }
 
   clearMap();
 

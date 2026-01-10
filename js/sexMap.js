@@ -1,23 +1,30 @@
 function drawSexGrowthMap(data, year = currentYear) {
+
+  // Comprovo que el GeoJSON dels barris estigui disponible
   if (!barrisGeoJSON || !barrisGeoJSON.features) return;
 
+  // Netejo el mapa abans de dibuixar
   clearMap();
 
   const svg = d3.select("#map");
   const width = svg.node().clientWidth;
   const height = svg.node().clientHeight;
 
+  // Defineixo la projecció utilitzant coordenades ja projectades
   const projection = d3.geoIdentity()
     .reflectY(true)
     .fitSize([width, height], barrisGeoJSON);
 
   const path = d3.geoPath().projection(projection);
 
+  // Filtrar només les unitats de tipus barri
   const barris = barrisGeoJSON.features.filter(d => d.properties.TIPUS_UA === "BARRI");
 
+  // Separo les dades de 2020 i de l’any seleccionat
   const data2020 = data.filter(d => d.Data_Referencia.startsWith("2020"));
   const dataYear = data.filter(d => d.Data_Referencia.startsWith(year.toString()));
 
+  // Agrupo les dades per barri i sexe
   function mapPerBarriISexe(dataset) {
     return d3.rollup(
       dataset,
@@ -33,6 +40,7 @@ function drawSexGrowthMap(data, year = currentYear) {
   const map2020 = mapPerBarriISexe(data2020);
   const mapYear = mapPerBarriISexe(dataYear);
 
+  // Calculo la diferència de creixement per sexe a cada barri
   const diffPerBarri = new Map();
 
   barris.forEach(b => {
@@ -49,10 +57,12 @@ function drawSexGrowthMap(data, year = currentYear) {
   const values = Array.from(diffPerBarri.values());
   const maxAbs = d3.max(values.map(v => Math.abs(v))) || 1;
 
+  // Definixo l’escala de color divergent
   const color = d3.scaleDiverging()
     .domain([-maxAbs, 0, maxAbs])
     .interpolator(t => d3.interpolateRdBu(1 - t));
 
+  // Dibuixo els polígons dels barris
   svg.selectAll("path")
     .data(barris)
     .enter()
@@ -69,10 +79,13 @@ function drawSexGrowthMap(data, year = currentYear) {
       showTooltip(e, `<strong>${nom}</strong><br/>Increment per sexe (2020–${year}): ${txt}`);
     })
     .on("mousemove", e => {
-      tooltip.style("left", (e.pageX + 10) + "px").style("top", (e.pageY + 10) + "px");
+      tooltip
+        .style("left", (e.pageX + 10) + "px")
+        .style("top", (e.pageY + 10) + "px");
     })
     .on("mouseout", hideTooltip);
 
+  // Afegeixo el títol del mapa
   svg.append("text")
     .attr("x", 20)
     .attr("y", 30)
@@ -80,12 +93,14 @@ function drawSexGrowthMap(data, year = currentYear) {
     .style("font-size", "18px")
     .style("font-weight", "bold");
 
-  // Comptadors globals
+  // Elimino possibles comptadors anteriors
   svg.selectAll(".sex-counter-group").remove();
 
+  // Calculo els totals per sexe de l’any seleccionat
   const donesTotals = d3.sum(mapYear, d => d[1].get("Dona") || 0);
   const homesTotals = d3.sum(mapYear, d => d[1].get("Home") || 0);
 
+  // Creo el grup de comptadors
   const counterGroup = svg.append("g")
     .attr("class", "sex-counter-group")
     .attr("transform", `translate(${width - 220 - 20}, 20)`);
@@ -99,22 +114,50 @@ function drawSexGrowthMap(data, year = currentYear) {
     .attr("opacity", 0.9)
     .attr("stroke", "#ccc");
 
-  counterGroup.append("text").attr("x", 12).attr("y", 22).text("Total dones").style("font-size", "0.9rem").style("font-weight", "bold");
-  counterGroup.append("text").attr("x", 12).attr("y", 42).text(donesTotals.toLocaleString()).style("font-size", "1.2rem").style("fill", "#b30000").style("font-weight", "bold");
-  counterGroup.append("text").attr("x", 12).attr("y", 62).text("Total homes").style("font-size", "0.9rem").style("font-weight", "bold");
-  counterGroup.append("text").attr("x", 12).attr("y", 80).text(homesTotals.toLocaleString()).style("font-size", "1.2rem").style("fill", "#1f4ed8").style("font-weight", "bold");
+  counterGroup.append("text")
+    .attr("x", 12)
+    .attr("y", 22)
+    .text("Total dones")
+    .style("font-size", "0.9rem")
+    .style("font-weight", "bold");
 
+  counterGroup.append("text")
+    .attr("x", 12)
+    .attr("y", 42)
+    .text(donesTotals.toLocaleString())
+    .style("font-size", "1.2rem")
+    .style("fill", "#b30000")
+    .style("font-weight", "bold");
+
+  counterGroup.append("text")
+    .attr("x", 12)
+    .attr("y", 62)
+    .text("Total homes")
+    .style("font-size", "0.9rem")
+    .style("font-weight", "bold");
+
+  counterGroup.append("text")
+    .attr("x", 12)
+    .attr("y", 80)
+    .text(homesTotals.toLocaleString())
+    .style("font-size", "1.2rem")
+    .style("fill", "#1f4ed8")
+    .style("font-weight", "bold");
+
+  // Elimino possibles llegendes anteriors
   svg.selectAll(".sex-legend-group").remove();
 
   const legendWidth = 180;
   const legendHeight = 12;
 
+  // Creo el grup de la llegenda
   const legendGroup = svg.append("g")
     .attr("class", "sex-legend-group")
     .attr("transform", `translate(${width - legendWidth - 40}, ${height - 40})`);
 
   const defs = svg.append("defs");
 
+  // Defineixo el gradient de la llegenda
   const linearGradient = defs.append("linearGradient")
     .attr("id", "legend-gradient-sex")
     .attr("x1", "0%")
@@ -124,9 +167,9 @@ function drawSexGrowthMap(data, year = currentYear) {
 
   linearGradient.selectAll("stop")
     .data([
-      { offset: "0%", color: color(-maxAbs) },   // més homes (blau)
-      { offset: "50%", color: color(0) },        // equilibri (blanc)
-      { offset: "100%", color: color(maxAbs) }   // més dones (vermell)
+      { offset: "0%", color: color(-maxAbs) },
+      { offset: "50%", color: color(0) },
+      { offset: "100%", color: color(maxAbs) }
     ])
     .enter()
     .append("stop")
@@ -140,7 +183,6 @@ function drawSexGrowthMap(data, year = currentYear) {
     .attr("ry", 3)
     .style("fill", "url(#legend-gradient-sex)");
 
-  // Text Homes
   legendGroup.append("text")
     .attr("x", 0)
     .attr("y", -6)
@@ -150,7 +192,6 @@ function drawSexGrowthMap(data, year = currentYear) {
     .style("fill", "#1f4ed8")
     .style("font-weight", "500");
 
-  // Text Dones
   legendGroup.append("text")
     .attr("x", legendWidth)
     .attr("y", -6)
@@ -159,5 +200,4 @@ function drawSexGrowthMap(data, year = currentYear) {
     .style("font-size", "0.75rem")
     .style("fill", "#b30000")
     .style("font-weight", "500");
-
 }

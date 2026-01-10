@@ -1,13 +1,4 @@
-// =========================================
-// POPULATION GROWTH MAP – BCN
-// Increment població per barri + totals BCN
-// =========================================
-
-
-// =========================
-// CÀLCULS
-// =========================
-
+// Calculo els mapes de població per a 2020 i per a l’any seleccionat
 function computePopulationMaps(data, year) {
   const data2020 = data.filter(d => d.Data_Referencia.startsWith("2020"));
   const dataYear = data.filter(d => d.Data_Referencia.startsWith(year.toString()));
@@ -26,7 +17,7 @@ function computePopulationMaps(data, year) {
   };
 }
 
-
+// Calculo la diferència absoluta de població per barri
 function computeDiffPerBarri(barris, map2020, mapYear) {
   const diffPerBarri = new Map();
 
@@ -40,11 +31,7 @@ function computeDiffPerBarri(barris, map2020, mapYear) {
   return diffPerBarri;
 }
 
-
-// =========================
-// DIBUIX MAPA
-// =========================
-
+// Dibuixo els polígons del mapa amb l’increment de població
 function drawPopulationMap(svg, barris, path, diffPerBarri, color, year) {
   svg.selectAll("path")
     .data(barris)
@@ -75,11 +62,7 @@ function drawPopulationMap(svg, barris, path, diffPerBarri, color, year) {
     .on("mouseout", hideTooltip);
 }
 
-
-// =========================
-// TÍTOL
-// =========================
-
+// Afegeixo el títol del mapa de població
 function drawPopulationTitle(svg, year) {
   svg.append("text")
     .attr("x", 20)
@@ -89,11 +72,7 @@ function drawPopulationTitle(svg, year) {
     .style("font-weight", "bold");
 }
 
-
-// =========================
-// COMPTADOR TOTAL BCN (DALT DRETA)
-// =========================
-
+// Mostro el total de població de Barcelona a la part superior dreta
 function drawTotalPopulationCounter(svg, width, totalYear) {
   svg.selectAll(".population-counter-group").remove();
 
@@ -126,11 +105,7 @@ function drawTotalPopulationCounter(svg, width, totalYear) {
     .style("fill", "#111");
 }
 
-
-// =========================
-// COMPTADOR INCREMENT BCN (ESQUERRA CENTRAT)
-// =========================
-
+// Mostro l’increment total de població al centre esquerre
 function drawPopulationIncrementCounter(svg, height, year, total2020, totalYear) {
   svg.selectAll(".population-increment-counter-group").remove();
 
@@ -178,11 +153,7 @@ function drawPopulationIncrementCounter(svg, height, year, total2020, totalYear)
     .style("fill", increment >= 0 ? "#2563eb" : "#b91c1c");
 }
 
-
-// =========================
-// LLEGENDA
-// =========================
-
+// Dibuixo la llegenda de l’increment de població
 function drawPopulationLegend(svg, width, height, color, maxVal) {
   svg.selectAll(".population-legend-group").remove();
 
@@ -241,14 +212,11 @@ function drawPopulationLegend(svg, width, height, color, maxVal) {
     .style("fill", "#444");
 }
 
-
-// =========================
-// FUNCIÓ PRINCIPAL
-// =========================
-
+// Dibuix complet del mapa de creixement de població
 function drawPopulationGrowthMap(data, year = currentYear) {
+
   if (!barrisGeoJSON || !barrisGeoJSON.features) {
-    console.warn("⏳ barrisGeoJSON encara no carregat");
+    console.warn("barrisGeoJSON encara no està carregat");
     return;
   }
 
@@ -268,7 +236,6 @@ function drawPopulationGrowthMap(data, year = currentYear) {
     d => d.properties.TIPUS_UA === "BARRI"
   );
 
-  // Càlculs
   const { map2020, mapYear, total2020, totalYear } = computePopulationMaps(data, year);
   const diffPerBarri = computeDiffPerBarri(barris, map2020, mapYear);
 
@@ -279,7 +246,6 @@ function drawPopulationGrowthMap(data, year = currentYear) {
     .domain([0, maxVal])
     .interpolator(d3.interpolateBlues);
 
-  // Dibuix
   drawPopulationMap(svg, barris, path, diffPerBarri, color, year);
   drawPopulationTitle(svg, year);
   drawTotalPopulationCounter(svg, width, totalYear);
