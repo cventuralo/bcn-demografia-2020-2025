@@ -2,199 +2,193 @@
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
-  <title>Demografia i fluxos migratoris a Barcelona (2020–2025)</title>
+  <title>Barcelona en transformació (2020–2025)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS -->
+  <!-- Estils principals -->
   <link rel="stylesheet" href="css/styles.css">
 
-  <!-- D3 -->
+  <!-- Llibreria D3 per a les visualitzacions -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
 
-  <!-- GSAP + ScrollTrigger -->
+  <!-- GSAP i ScrollTrigger per a animacions i scroll -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 
 <body>
 
-  <!-- ===================== -->
-  <!-- TÍTOL PRINCIPAL -->
-  <!-- ===================== -->
+  <!-- INTRODUCCIÓ -->
+  <!-- Presento el context general del projecte -->
   <header id="intro-dark">
     <div class="intro-content">
       <h1>Barcelona en transformació (2020–2025)</h1>
 
       <p>
-        Durant cinc anys, la ciutat ha canviat en silenci. Ha sumat habitants, ha incorporat nous orígens,
-        ha madurat en edat i s’ha format més. Però també s’ha encarit, s’ha reordenat i s’ha tensat.
-        Barris que es revaloritzen, veïns que arriben, altres que marxen. Una Barcelona que es mou,
-        que es redefineix i que no sempre avança al mateix ritme.
+        Durant cinc anys, la ciutat ha canviat de manera progressiva. Ha sumat habitants, ha incorporat nous orígens,
+        ha madurat en edat i ha incrementat el nivell formatiu. Al mateix temps, s’ha encarit, s’ha reordenat
+        i ha generat noves tensions territorials. Els barris evolucionen a ritmes diferents i el perfil de la població es redefineix.
       </p>
 
       <p class="closing">
-        Aquest recorregut explora com la població, els barris i les dinàmiques urbanes s’han transformat entre 2020 i 2025.
-        No és només una història de dades. És una història de persones. I de la ciutat que estan construint.
+        En aquest recorregut analitzo com la població, els barris i les dinàmiques urbanes s’han transformat entre 2020 i 2025.
+        L’objectiu és entendre els canvis a partir de les dades, però també a partir del seu impacte en la vida quotidiana.
       </p>
     </div>
   </header>
 
-  <!-- ===================== -->
-  <!-- CONTENIDOR PRINCIPAL -->
-  <!-- ===================== -->
+  <!-- CONTINGUT PRINCIPAL -->
+  <!-- Organitzo el relat en una columna de text i una de visualització -->
   <main id="container">
 
-    <!-- ===== Columna narrativa ===== -->
+    <!-- COLUMNA NARRATIVA -->
     <section id="text">
 
+      <!-- Evolució demogràfica general -->
       <div class="step" data-step="base">
         <h2>Barcelona es transforma</h2>
 
         <p>
-          Entre el 2020 i el 2025, Barcelona ha viscut una transformació demogràfica significativa en un context de grans canvis socials i urbans.
-          En alguns moments del període, la població va arribar a reduir-se fins a <strong>6.200 habitants</strong>, però amb el pas dels anys la tendència es va invertir.
-          El 2025 la ciutat tanca amb <strong>més de 65.600 nous residents</strong>, consolidant una etapa de creixement sostingut.
+          Entre el 2020 i el 2025, Barcelona ha viscut una transformació demogràfica significativa.
+          En alguns moments del període, la població va arribar a reduir-se fins a <strong>6.200 habitants</strong>,
+          però amb el pas dels anys la tendència es va invertir.
+          El 2025 la ciutat tanca amb <strong>més de 65.600 nous residents</strong>.
         </p>
 
         <p>
-          Aquest augment no s’ha distribuït de manera homogènia.
-          Alguns barris han concentrat una part important d’aquest increment, mentre que d’altres han mantingut evolucions més estables.
-          El <strong>barri Gòtic</strong> i el <strong>Besòs i el Maresme</strong> destaquen com els principals receptors de nova població en aquest període.
+          Aquest creixement no s’ha distribuït de manera homogènia.
+          El <strong>barri Gòtic</strong> i el <strong>Besòs i el Maresme</strong> destaquen com els principals receptors de nova població,
+          mentre que altres barris han mantingut evolucions més estables.
         </p>
 
         <p>
           Les dades mostren una ciutat que recupera capacitat d’atracció i que reconfigura el seu mapa residencial.
-          Un canvi que no només afecta el nombre d’habitants, sinó també la composició i la dinàmica dels barris.
+          No es tracta només d’un augment en nombre d’habitants, sinó d’un canvi en la composició dels barris.
         </p>
       </div>
 
+      <!-- Orígens de la nova població -->
       <div class="step" data-step="regio">
         <h2>Nous orígens, nous veïns</h2>
 
         <p>
           Entre el 2020 i el 2025, Barcelona ha ampliat el seu mapa humà amb l’arribada de població procedent de diferents regions del món.
-          Els fluxos més rellevants han estat els de <strong>l’Amèrica del Sud (~34.000)</strong>, 
-          <strong>l’Europa Oriental (~10.500)</strong> i <strong>l’Àsia meridional (~9.000)</strong>, que han contribuït de manera notable al creixement de la ciutat.
+          Els fluxos més rellevants han estat els de <strong>l’Amèrica del Sud (prop de 34.000 persones)</strong>,
+          <strong>l’Europa Oriental (al voltant de 10.500)</strong> i <strong>l’Àsia meridional (gairebé 9.000)</strong>.
         </p>
 
         <p>
           L’arribada de nous residents no s’ha distribuït de manera homogènia.
           <strong>Sants</strong>, <strong>Sant Gervasi</strong> i el <strong>Barri Gòtic</strong> concentren bona part d’aquests fluxos,
-          convertint-se en alguns dels principals punts d’acollida durant aquest període.
+          convertint-se en punts destacats d’acollida durant el període.
         </p>
 
         <p>
-          Aquestes incorporacions tenen un impacte directe en la composició social i cultural dels barris,
-          afavorint una major diversitat i introduint noves dinàmiques en el dia a dia de la ciutat.
+          Aquestes incorporacions modifiquen la composició social i cultural dels barris
+          i introdueixen noves dinàmiques en el dia a dia de la ciutat.
         </p>
       </div>
 
+      <!-- Estructura d’edat -->
       <div class="step" data-step="edat">
         <h2>Una ciutat que madura</h2>
 
         <p>
           Entre el 2020 i el 2025, l’estructura d’edat de Barcelona s’ha desplaçat cap a franges més adultes.
-          La única franja que ha perdut població és la de <strong>0 a 15 anys</strong>, amb una baixada aproximada de 
+          L’única franja que ha perdut població és la de <strong>0 a 15 anys</strong>, amb una baixada aproximada de
           <strong>13.500 nens i nenes</strong>.
         </p>
 
         <p>
-          Al mateix temps, la franja de <strong>25 a 44 anys</strong> és la que més creix, amb gairebé 
-          <strong>31.000 nous residents</strong>. Però no és l’única.
-          La franja de <strong>45 a 64 anys</strong> també augmenta de manera significativa, amb més de 
-          <strong>21.500 persones</strong>.
+          La franja de <strong>25 a 44 anys</strong> és la que més creix, amb gairebé <strong>31.000 nous residents</strong>.
+          També augmenta de manera notable la franja de <strong>45 a 64 anys</strong>, amb més de <strong>21.500 persones</strong>.
         </p>
 
         <p>
-          El que dibuixen aquestes dades no és una ciutat envellida, sinó una ciutat que madura.
-          <strong>Menys infants, més adults</strong>.
+          Aquestes dades apunten a una ciutat amb més pes d’adults en edat activa i menys presència d’infants.
         </p>
       </div>
 
+      <!-- Distribució per sexes -->
       <div class="step" data-step="sexe">
         <h2>Equilibri per sexes als barris</h2>
 
         <p>
           Entre el 2020 i el 2025, la majoria de barris de Barcelona presenten un <strong>equilibri estable entre homes i dones</strong>.
-          No s’observen desequilibris significatius a escala de ciutat, i la distribució per sexes es manté força homogènia en la major part del territori.
+          A escala de ciutat no s’observen desequilibris significatius.
         </p>
 
         <p>
-          Durant els primers anys del període, el <strong>Raval</strong> mostrava una proporció més elevada de dones,
-          mentre que al <strong>Barri Gòtic</strong> la presència d’homes era superior.
+          Durant els primers anys del període, el <strong>Raval</strong> mostrava una presència femenina més elevada,
+          mentre que al <strong>Barri Gòtic</strong> predominaven els homes.
         </p>
 
         <p>
-          Amb el pas dels anys, la diferència al Raval s’ha reduït fins a pràcticament desaparèixer.
-          En canvi, al Barri Gòtic el desequilibri es manté, amb una diferència superior als <strong>3.500 homes respecte a dones</strong> l’any 2025.
+          Amb el pas del temps, la diferència al Raval s’ha reduït fins a pràcticament desaparèixer.
+          En canvi, al Barri Gòtic el desequilibri es manté, amb una diferència superior als <strong>3.500 homes</strong>.
         </p>
 
         <p>
-          En conjunt, l’evolució reflecteix una ciutat majoritàriament equilibrada, amb alguns barris que mantenen dinàmiques específiques.
+          En conjunt, la distribució per sexes es manté força equilibrada, amb algunes dinàmiques específiques per barri.
         </p>
       </div>
 
+      <!-- Nivell educatiu -->
       <div class="step" data-step="educacio">
-        <h2>La ciutat dels títols… i de les desigualtats</h2>
+        <h2>Nivell educatiu i desigualtats territorials</h2>
 
         <p>
-          Entre el 2020 i el 2025, Barcelona ha incorporat prop de <strong>80.000 nous residents amb titulacions superiors</strong> 
-          entre la població de més de 16 anys. És, amb diferència, el grup educatiu que més creix a la ciutat.
+          Entre el 2020 i el 2025, Barcelona ha incorporat prop de <strong>80.000 nous residents amb titulacions superiors</strong>
+          entre la població de més de 16 anys. És el grup educatiu que més creix a la ciutat.
         </p>
 
         <p>
-          Però el retrat no és tan homogeni com podria semblar.
-          Tot i aquest augment, <strong>2 de cada 3 residents majors de 16 anys</strong> a Barcelona encara tenen estudis per sota del nivell universitari o de CFGS.
-          La ciutat es forma, sí, però no ho fa al mateix ritme a tot arreu.
+          Tot i això, <strong>2 de cada 3 residents majors de 16 anys</strong> encara tenen estudis per sota del nivell universitari o de CFGS.
+          El creixement del nivell formatiu no és homogeni.
         </p>
 
         <p>
-          Els nivells educatius més alts es concentren sobretot a la <strong>zona alta</strong> i al <strong>centre</strong> de la ciutat,
-          amb l’excepció del <strong>Raval</strong>, el <strong>Barri Gòtic</strong> i <strong>Poble Sec</strong>.
-          En canvi, els nivells formatius més baixos tenen més pes a les <strong>perifèries</strong>.
-          Un mapa que parla de talent, però també de desigualtats.
+          Els nivells educatius més alts es concentren sobretot a la <strong>zona alta</strong> i al <strong>centre</strong>,
+          amb l’excepció del <strong>Raval</strong>, el <strong>Barri Gòtic</strong> i <strong>Poble-sec</strong>.
+          A les <strong>perifèries</strong> hi ha un pes més elevat de nivells formatius baixos.
         </p>
       </div>
 
+      <!-- Preu de l’habitatge -->
       <div class="step" data-step="preu">
         <h2>Quan viure es fa més car</h2>
 
         <p>
           Entre el 2020 i el 2025, el preu mitjà de l’habitatge a Barcelona ha augmentat un <strong>29%</strong>.
-          Una pujada generalitzada que no s’ha repartit de manera uniforme per la ciutat.
+          Es tracta d’una pujada generalitzada, però amb intensitats diferents segons el barri.
         </p>
 
         <p>
-          Barris com <strong>la Marina</strong>, <strong>Torre Baró</strong> i <strong>Ciutat Meridiana</strong> han estat els que més s’han encarit,
+          <strong>La Marina</strong>, <strong>Torre Baró</strong> i <strong>Ciutat Meridiana</strong> han estat els barris que més s’han encarit,
           arribant gairebé a <strong>doblar el seu preu</strong>.
-          En canvi, zones com <strong>Santa Caterina</strong> i el <strong>Barri Gòtic</strong> gairebé no han variat.
+          En canvi, <strong>Santa Caterina</strong> i el <strong>Barri Gòtic</strong> han registrat variacions molt menors.
         </p>
 
         <p>
-          A la <strong>zona alta</strong>, l’augment es manté per sota del 30%.
-          En canvi, a l’<strong>est de la ciutat</strong>, com el <strong>Congrés</strong>, la <strong>Sagrada Família</strong> o <strong>Provençals</strong>, 
+          A la <strong>zona alta</strong>, els increments es mantenen per sota del 30%.
+          A l’<strong>est de la ciutat</strong>, com al <strong>Congrés</strong>, la <strong>Sagrada Família</strong> o <strong>Provençals</strong>,
           les pujades s’acosten al <strong>40%</strong>.
-          Barris tradicionalment de classe mitjana que es revaloritzen ràpidament.
-          I quan el preu puja, també canvia qui s’hi pot quedar.
         </p>
 
         <p>
-          Aquestes pujades no són només números.
-          Són mudances forçades, pisos compartits més temps del previst, famílies que busquen fora el que ja no poden pagar dins.
-          La pregunta no és si Barcelona s’encareix.
-          La pregunta és <strong>per a qui continua sent accessible</strong>.
+          Aquestes dinàmiques tenen un impacte directe en la capacitat de permanència dels residents
+          i en el perfil social dels barris.
         </p>
       </div>
 
     </section>
 
-    <!-- ===== Columna visualització ===== -->
+    <!-- COLUMNA DE VISUALITZACIÓ -->
+    <!-- Mostro el mapa i els controls temporals -->
     <section id="graphic">
 
-      <!-- MAPA -->
       <svg id="map" width="100%" height="500"></svg>
 
-      <!-- CONTROLS TEMPORALS -->
       <div id="timeline-controls">
         <button id="play-btn">▶️ Play</button>
         <input type="range" id="year-slider" min="2020" max="2025" step="1" value="2020">
@@ -204,42 +198,37 @@
     </section>
 
   </main>
+
+  <!-- CONCLUSIÓ -->
+  <!-- Tanco el relat amb una lectura global dels canvis -->
   <section id="final">
     <div class="final-content">
       <h2>La ciutat que s’està dibuixant</h2>
 
       <p>
-        Entre el 2020 i el 2025, Barcelona no només ha canviat de xifres. Ha canviat de perfil.
-        Ha sumat habitants, ha incorporat nous orígens, ha madurat en edat i s’ha format més.
-        Però també s’ha encarit, s’ha reordenat i s’ha fet més desigual segons on miris.
+        Entre el 2020 i el 2025, Barcelona ha canviat de perfil.
+        Ha crescut, s’ha diversificat, ha madurat i s’ha format més, però també s’ha encarit i s’ha tensionat.
       </p>
 
       <p>
-        És una ciutat amb més adults que infants, amb més titulats que abans, amb més veïns que arriben de fora
-        i amb barris que es transformen a ritmes molt diferents.
-        Una Barcelona que atrau, però que també expulsa.
-        Que creix, però no sempre de manera equilibrada.
+        És una ciutat amb més adults que infants, amb més titulats, amb més veïns d’orígens diversos
+        i amb barris que evolucionen a ritmes diferents.
       </p>
 
       <p>
-        El mapa demogràfic, educatiu i residencial d’aquests cinc anys dibuixa una ciutat en moviment constant.
-        Una ciutat que es revaloritza, que es diversifica i que es tensiona.
-        Una ciutat que ja no és exactament la que era… i que encara no sap del tot què vol ser.
+        El mapa demogràfic, educatiu i residencial d’aquests cinc anys dibuixa una ciutat en moviment constant,
+        amb oportunitats, però també amb desequilibris.
       </p>
 
       <p class="closing">
-        Entendre aquests canvis no és només llegir dades.  
-        És llegir vides.  
-        I és aquí on Barcelona, més que mai, es juga el seu futur.
+        Entendre aquests canvis permet llegir la ciutat més enllà de les xifres
+        i situar les persones al centre de l’anàlisi.
       </p>
     </div>
   </section>
 
-  <!-- ===================== -->
   <!-- SCRIPTS DEL PROJECTE -->
-  <!-- ===================== -->
   <script src="js/main.js"></script>
-  <!--<script src="js/mapBase.js"></script>-->
   <script src="js/flows.js"></script>
   <script src="js/ageStructure.js"></script>
   <script src="js/censusMicro.js"></script>
