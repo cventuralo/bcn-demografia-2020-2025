@@ -1,3 +1,8 @@
+/* css Global */
+html, body {
+  overflow-x: hidden;
+}
+
 /* Defineixo els estils generals del document */
 body {
   margin: 0;
