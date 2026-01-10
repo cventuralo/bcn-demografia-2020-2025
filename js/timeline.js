@@ -37,10 +37,10 @@ if (yearSlider && yearLabel && playBtn) {
     if (playInterval) {
       clearInterval(playInterval);
       playInterval = null;
-      playBtn.textContent = "Play";
+      playBtn.textContent = "▶️ Play";
 
     } else {
-      playBtn.textContent = "Pausa";
+      playBtn.textContent = "⏸️ Pausa";
 
       playInterval = setInterval(() => {
         currentYear++;
