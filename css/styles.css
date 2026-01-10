@@ -109,3 +109,37 @@ h1 {
   z-index: 1000;
   pointer-events: none;
 }
+
+/* Conclusions*/
+ 
+#final {
+  min-height: 100vh;
+  width: 100%;
+  background: #0f0f0f;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10vh 10vw;
+}
+
+.final-content {
+  max-width: 800px;
+}
+
+#final h2 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+#final p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+#final .closing {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-top: 3rem;
+}
