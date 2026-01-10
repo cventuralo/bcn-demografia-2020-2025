@@ -1,6 +1,4 @@
-/* ===================== */
-/* RESET BÀSIC */
-/* ===================== */
+/* Defineixo els estils generals del document */
 body {
   margin: 0;
   padding: 0;
@@ -10,10 +8,7 @@ body {
   background: #ffffff;
 }
 
-/* ===================== */
-/* HEADER */
-/* ===================== */
-
+/* Configuro la portada a pantalla completa amb el contingut alineat a la dreta */
 #intro-dark {
   min-height: 100vh;
   width: 100%;
@@ -21,15 +16,17 @@ body {
   color: #ffffff;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* 🔥 porta el bloc cap a la dreta */
+  justify-content: flex-end;
   padding: 10vh 10vw;
   box-sizing: border-box;
 }
 
+/* Limito l’amplada del bloc de text introductori */
 .intro-content {
   max-width: 700px;
 }
 
+/* Estil del títol principal */
 #intro-dark h1 {
   font-size: 3.2rem;
   line-height: 1.1;
@@ -37,6 +34,7 @@ body {
   color: #ffffff;
 }
 
+/* Estil els paràgrafs de la introducció */
 #intro-dark p {
   font-size: 1.2rem;
   line-height: 1.7;
@@ -44,6 +42,7 @@ body {
   color: #eaeaea;
 }
 
+/* Destaco el paràgraf de tancament de la introducció */
 #intro-dark .closing {
   font-size: 1.35rem;
   font-weight: 500;
@@ -51,65 +50,48 @@ body {
   color: #ffffff;
 }
 
-/* Mapes */
-h1 {
-  margin: 0;
-  font-size: 2.4rem;
-}
-
-.subtitle {
-  color: #555;
-  max-width: 900px;
-  margin-top: 10px;
-  line-height: 1.6;
-}
-
-/* ===================== */
-/* LAYOUT PRINCIPAL */
-/* ===================== */
+/* Organitzo el contingut en dues columnes: text i visualització */
 #container {
   display: flex;
   align-items: flex-start;
   gap: 40px;
   padding: 20px 40px;
-  flex-wrap: wrap; /* 🔥 important per tallar bé abans de la conclusió */
+  flex-wrap: wrap;
 }
 
-/* Columna narrativa */
+/* Defineixo la columna narrativa */
 #text {
   flex: 1;
   max-width: 420px;
 }
 
-/* Columna gràfica */
+/* Defineixo la columna de visualització amb comportament sticky */
 #graphic {
   flex: 2;
   position: sticky;
   top: 20px;
 }
 
-/* ===================== */
-/* STEPS (scroll) */
-/* ===================== */
+/* Estilo els blocs que actuen com a passos de scroll */
 .step {
   margin-bottom: 120px;
   opacity: 0.3;
   transition: opacity 0.3s ease;
 }
 
+/* Activo visualment el bloc visible */
 .step.active {
   opacity: 1;
 }
 
+/* títols dels blocs */
 .step h2 {
   margin-top: 0;
   font-size: 1.6rem;
   margin-bottom: 10px;
 }
 
-/* ===================== */
-/* MAPA */
-/* ===================== */
+/* Defineixo l’espai del mapa */
 #map {
   width: 100%;
   height: 500px;
@@ -117,9 +99,7 @@ h1 {
   background: #fafafa;
 }
 
-/* ===================== */
-/* TIMELINE CONTROLS */
-/* ===================== */
+/* Organitzo els controls de la línia temporal */
 #timeline-controls {
   display: flex;
   align-items: center;
@@ -137,13 +117,12 @@ h1 {
   width: 200px;
 }
 
+/* Destaquem l’any seleccionat */
 #year-label {
   font-weight: bold;
 }
 
-/* ===================== */
-/* TOOLTIP */
-/* ===================== */
+/* Estil dels tooltips de les visualitzacions */
 .tooltip {
   font-size: 0.9rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
@@ -151,10 +130,7 @@ h1 {
   pointer-events: none;
 }
 
-/* ===================== */
-/* CONCLUSIÓ FINAL */
-/* ===================== */
-
+/* Creo una secció de tancament a pantalla completa */
 #final {
   min-height: 100vh;
   width: 100%;
@@ -165,20 +141,23 @@ h1 {
   justify-content: center;
   padding: 10vh 10vw;
   position: relative;
-  clear: both;        /* 🔥 força tall del layout */
+  clear: both;
   z-index: 10;
 }
 
+/* Limito l’amplada del contingut de la conclusió */
 .final-content {
   max-width: 800px;
 }
 
+/* Estil del títol de la conclusió */
 #final h2 {
   font-size: 3rem;
   margin-bottom: 2rem;
   line-height: 1.2;
 }
 
+/* Estil dels paràgrafs de la conclusió */
 #final p {
   font-size: 1.2rem;
   line-height: 1.7;
@@ -186,6 +165,7 @@ h1 {
   color: #eaeaea;
 }
 
+/* Destaco el paràgraf final */
 #final .closing {
   font-size: 1.4rem;
   font-weight: 500;
@@ -193,9 +173,7 @@ h1 {
   color: #ffffff;
 }
 
-/* ===================== */
-/* RESPONSIVE */
-/* ===================== */
+/* Ajusto el layout per a pantalles petites */
 @media (max-width: 900px) {
   #container {
     flex-direction: column;
@@ -219,7 +197,8 @@ h1 {
   }
 }
 
-/* Font de les dades Open Data BCN*/
+
+/* Estil la referència a la font de dades */
 .source, .source-final {
   font-size: 0.9rem;
   color: #777;
