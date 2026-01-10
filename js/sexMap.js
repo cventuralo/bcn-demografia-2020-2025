@@ -99,10 +99,10 @@ function drawSexGrowthMap(data, year = currentYear) {
     .attr("opacity", 0.9)
     .attr("stroke", "#ccc");
 
-  counterGroup.append("text").attr("x", 12).attr("y", 22).text("Total dones").style("font-size", "0.8rem");
-  counterGroup.append("text").attr("x", 12).attr("y", 42).text(donesTotals.toLocaleString()).style("font-size", "1.2rem").style("fill", "#b30000");
-  counterGroup.append("text").attr("x", 12).attr("y", 62).text("Total homes").style("font-size", "0.8rem");
-  counterGroup.append("text").attr("x", 12).attr("y", 80).text(homesTotals.toLocaleString()).style("font-size", "1.2rem").style("fill", "#1f4ed8");
+  counterGroup.append("text").attr("x", 12).attr("y", 22).text("Total dones").style("font-size", "0.9rem").style("font-weight", "bold");
+  counterGroup.append("text").attr("x", 12).attr("y", 42).text(donesTotals.toLocaleString()).style("font-size", "1.2rem").style("fill", "#b30000").style("font-weight", "bold");
+  counterGroup.append("text").attr("x", 12).attr("y", 62).text("Total homes").style("font-size", "0.9rem").style("font-weight", "bold");
+  counterGroup.append("text").attr("x", 12).attr("y", 80).text(homesTotals.toLocaleString()).style("font-size", "1.2rem").style("fill", "#1f4ed8").style("font-weight", "bold");
 
   svg.selectAll(".sex-legend-group").remove();
 
