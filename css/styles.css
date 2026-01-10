@@ -218,3 +218,15 @@ h1 {
     font-size: 1.05rem;
   }
 }
+
+/* Font de les dades Open Data BCN*/
+.source, .source-final {
+  font-size: 0.9rem;
+  color: #777;
+  margin-top: 1rem;
+}
+
+.source a, .source-final a {
+  color: #0056b3;
+  text-decoration: underline;
+}
